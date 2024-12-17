@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
@@ -15,17 +16,22 @@ export default function AppNavigator() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Lyt efter brugerens authentication-status
+        // Tjek brugerens auth-status
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            setLoading(false);
+            setLoading(false); // Stop loading
         });
 
         return unsubscribe; // Cleanup listener
     }, []);
 
+    // Vis ActivityIndicator mens auth-status tjekkes
     if (loading) {
-        return null; // Vis evt. en loading-skærm
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#007BFF" />
+            </View>
+        );
     }
 
     return (
@@ -45,3 +51,12 @@ export default function AppNavigator() {
         </NavigationContainer>
     );
 }
+
+const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+    },
+});
