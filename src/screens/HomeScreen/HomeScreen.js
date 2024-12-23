@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import styles from './HomeScreen.styles';
 import { auth, db } from '../../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Ikonbibliotek
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
@@ -31,20 +32,29 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            {userData ? (
-                <>
-                    <Text style={styles.welcomeText}>Hello, {userData.name}</Text>
-                    <Text style={styles.subtitle}>Welcome to NordicCrimeLab</Text>
-                    <Image
-                        source={{
-                            uri: userData.profileImage || 'https://via.placeholder.com/150',
-                        }}
-                        style={styles.avatar}
-                    />
-                </>
-            ) : (
-                <Text style={styles.loadingText}>Loading...</Text>
-            )}
+            <View style={styles.header}>
+                {/* Velkomsttekst */}
+                <View style={styles.greetingContainer}>
+                    {userData && <Text style={styles.welcomeText}>Hello, {userData.name}</Text>}
+                </View>
+
+                {/* Notifikationer og Profil */}
+                <View style={styles.actionsContainer}>
+                    {/* Klokkeikon */}
+                    <TouchableOpacity onPress={() => console.log('Notifications')}>
+                        <Icon name="bell-outline" size={24} color="#333" style={styles.icon} />
+                    </TouchableOpacity>
+
+                    {/* Profilbillede eller ikon */}
+                    <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+                        {userData?.profileImage ? (
+                            <Icon name="account-circle" size={40} color="#ccc" style={styles.avatar} />
+                        ) : (
+                            <Icon name="account-circle" size={40} color="#333" style={styles.avatar} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     );
 }
