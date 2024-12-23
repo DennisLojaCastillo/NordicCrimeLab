@@ -36,25 +36,8 @@ export default function HomeScreen({ navigation }) {
                 {/* Velkomsttekst */}
                 <View style={styles.greetingContainer}>
                     {userData && <Text style={styles.welcomeText}>Hello, {userData.name}</Text>}
-                </View>
-
-                {/* Notifikationer og Profil */}
-                <View style={styles.actionsContainer}>
-                    {/* Klokkeikon */}
-                    <TouchableOpacity onPress={() => console.log('Notifications')}>
-                        <Icon name="bell-outline" size={24} color="#333" style={styles.icon} />
-                    </TouchableOpacity>
-
-                    {/* Profilbillede eller ikon */}
-                    <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
-                        {userData?.profileImage ? (
-                            <Icon name="account-circle" size={40} color="#ccc" style={styles.avatar} />
-                        ) : (
-                            <Icon name="account-circle" size={40} color="#333" style={styles.avatar} />
-                        )}
-                    </TouchableOpacity>
-                </View>
-            </View>
+                </View>            
+            </View>            
         </View>
     );
 }

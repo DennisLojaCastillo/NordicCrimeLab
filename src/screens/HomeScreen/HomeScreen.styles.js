@@ -22,16 +22,4 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
     },
-    actionsContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    icon: {
-        marginRight: 16,
-    },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-    },
 });

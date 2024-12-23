@@ -5,9 +5,10 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
-import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
+// Import screens
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
+import TabNavigator from './TabNavigator'; // Import TabNavigator
 
 const Stack = createNativeStackNavigator();
 
@@ -16,16 +17,14 @@ export default function AppNavigator() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Tjek brugerens auth-status
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            setLoading(false); // Stop loading
+            setLoading(false);
         });
 
-        return unsubscribe; // Cleanup listener
+        return unsubscribe;
     }, []);
 
-    // Vis ActivityIndicator mens auth-status tjekkes
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -36,15 +35,15 @@ export default function AppNavigator() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {user ? (
-                    <>
-                        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
-                    </>
+                    // Brugeren er logget ind, vis TabNavigator
+                    <Stack.Screen name="TabNavigator" component={TabNavigator} />
                 ) : (
+                    // Brugeren er ikke logget ind, vis Login og SignUp flows
                     <>
-                        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-                        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Sign Up' }} />
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="SignUp" component={SignUpScreen} />
                     </>
                 )}
             </Stack.Navigator>
