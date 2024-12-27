@@ -4,6 +4,7 @@ import styles from './SignUpScreen.styles';
 import { auth, db } from '../../config/firebase'; // Firebase instance
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import Layout from '../../components/layouts'; // Brug Layout-komponenten
 
 export default function SignUpScreen({ navigation }) {
     const [name, setName] = useState('');
@@ -37,7 +38,7 @@ export default function SignUpScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <Layout>
             <Text style={styles.title}>Sign Up</Text>
 
             <TextInput
@@ -62,6 +63,6 @@ export default function SignUpScreen({ navigation }) {
             />
 
             <Button title="Sign Up" onPress={handleSignUp} />
-        </View>
+        </Layout>
     );
 }

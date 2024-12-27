@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import styles from './ChatDetailScreen.styles';
+import Layout from '../../components/Layout/Layouts'; // Import Layout-komponenten
 
 export default function ChatDetailScreen() {
     return (
-        <View style={styles.container}>
+        <Layout>
             <Text style={styles.text}>This is the Chat Detail Screen</Text>
-        </View>
+        </Layout>
     );
 }

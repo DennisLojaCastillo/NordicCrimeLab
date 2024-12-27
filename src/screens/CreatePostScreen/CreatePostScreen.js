@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import styles from './CreatePostScreen.styles';
+import Layout from '../../components/Layout/Layouts'; // Import Layout-komponenten
 
 export default function CreatePostScreen() {
     return (
-        <View style={styles.container}>
+        <Layout>
             <Text style={styles.text}>This is the Create Post Screen</Text>
-        </View>
+        </Layout>
     );
 }

@@ -9,6 +9,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 import TabNavigator from './TabNavigator'; // Import TabNavigator
+import EditProfileScreen from '../screens/EditProfileScreen/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,18 +36,19 @@ export default function AppNavigator() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {user ? (
-                    // Brugeren er logget ind, vis TabNavigator
-                    <Stack.Screen name="TabNavigator" component={TabNavigator} />
-                ) : (
-                    // Brugeren er ikke logget ind, vis Login og SignUp flows
-                    <>
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                        <Stack.Screen name="SignUp" component={SignUpScreen} />
-                    </>
-                )}
-            </Stack.Navigator>
+           <Stack.Navigator screenOptions={{ headerShown: false }}>
+    {user ? (
+        // Hvis brugeren er logget ind
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
+    ) : (
+        // Hvis brugeren ikke er logget ind
+        <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+        </>
+    )}
+</Stack.Navigator>
+
         </NavigationContainer>
     );
 }

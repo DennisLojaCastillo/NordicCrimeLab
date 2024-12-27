@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { Text, TextInput, Button, Alert } from 'react-native';
 import styles from './LoginScreen.styles';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import Layout from '../../components/layouts'; // Brug Layout-komponenten
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -13,20 +14,20 @@ export default function LoginScreen({ navigation }) {
             Alert.alert('Error', 'Please fill in all fields');
             return;
         }
-    
+
         try {
             // Firebase Login
             await signInWithEmailAndPassword(auth, email, password);
             Alert.alert('Success', 'Logged in successfully');
-            // Fjern navigation.navigate('Home') her
+            // Automatisk redirect håndteres via AppNavigator.js
         } catch (error) {
             console.error('Login error:', error.message);
             Alert.alert('Error', 'Invalid email or password');
         }
-    };    
+    };
 
     return (
-        <View style={styles.container}>
+        <Layout>
             <Text style={styles.title}>Login</Text>
 
             <TextInput
@@ -49,6 +50,6 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.link} onPress={() => navigation.navigate('SignUp')}>
                 Don't have an account? Sign Up
             </Text>
-        </View>
+        </Layout>
     );
 }

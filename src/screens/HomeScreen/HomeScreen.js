@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {View, Text } from 'react-native';
 import styles from './HomeScreen.styles';
 import { auth, db } from '../../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Ikonbibliotek
+import Layout from '../../components/Layout/Layouts'; // Brug Layout-komponenten
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
@@ -31,13 +31,13 @@ export default function HomeScreen({ navigation }) {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <Layout>
             <View style={styles.header}>
                 {/* Velkomsttekst */}
                 <View style={styles.greetingContainer}>
                     {userData && <Text style={styles.welcomeText}>Hello, {userData.name}</Text>}
-                </View>            
-            </View>            
-        </View>
+                </View>
+            </View>
+        </Layout>
     );
 }

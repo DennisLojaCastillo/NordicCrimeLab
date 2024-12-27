@@ -9,8 +9,20 @@ import ForumsScreen from '../screens/ForumsScreen/ForumsScreen';
 import CreatePostScreen from '../screens/CreatePostScreen/CreatePostScreen';
 import ChatScreen from '../screens/ChatScreen/ChatScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EditProfileScreen from '../screens/EditProfileScreen/EditProfileScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function ProfileStack() {
+    return (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen}/>
+            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen}/>
+        </Stack.Navigator>
+    );
+}
 
 export default function TabNavigator() {
     return (
@@ -43,7 +55,7 @@ export default function TabNavigator() {
                 <Tab.Screen name="Forums" component={ForumsScreen} />
                 <Tab.Screen name="CreatePost" component={CreatePostScreen} />
                 <Tab.Screen name="Chats" component={ChatScreen} />
-                <Tab.Screen name="Profile" component={ProfileScreen} />
+                <Tab.Screen name="Profile" component={ProfileStack} />                
             </Tab.Navigator>
         </NavigationContainer>
     );

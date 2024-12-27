@@ -12,7 +12,7 @@ export default StyleSheet.create({
         padding: 16,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: '#7ED4AD',
     },
     greetingContainer: {
         flex: 1,
@@ -20,6 +20,6 @@ export default StyleSheet.create({
     welcomeText: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#7ED4AD',
     },
 });
