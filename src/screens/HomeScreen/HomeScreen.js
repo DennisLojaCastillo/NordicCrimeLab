@@ -3,14 +3,12 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native'; // Tilføj
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
     const handleLogout = async () => {
         try {
-            await signOut(auth);
-            navigation.replace('Login'); // Naviger direkte til LoginScreen
+            await signOut(auth);            
         } catch (error) {
             console.error('Logout error:', error.message);
-            // Eventuelt vis en fejlmeddelelse på skærmen
         }
     };
     

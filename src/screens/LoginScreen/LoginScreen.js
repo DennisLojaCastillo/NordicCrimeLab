@@ -5,7 +5,6 @@ import {
     TextInput,
     TouchableOpacity,
     Image,
-    StyleSheet,
     KeyboardAvoidingView,
     Platform,
     TouchableWithoutFeedback,
@@ -13,7 +12,7 @@ import {
 } from 'react-native';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import styles from './LoginScreen.styles'; // Import styles
+import styles from './LoginScreen.styles';
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -21,13 +20,13 @@ export default function LoginScreen({ navigation }) {
 
     const handleLogin = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.replace('Home');
+            await signInWithEmailAndPassword(auth, email, password);                    
         } catch (error) {
             console.error('Error logging in:', error.message);
             alert('Invalid email or password.');
         }
     };
+    
 
     return (
         <KeyboardAvoidingView
@@ -36,20 +35,12 @@ export default function LoginScreen({ navigation }) {
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
-                    {/* Logo */}
                     <Image
                         source={require('../../../assets/logo/main_logo.png')}
                         style={styles.logo}
                         resizeMode="contain"
                     />
-
-                    {/* Welcome Text */}
                     <Text style={styles.title}>Welcome back!</Text>
-                    <Text style={styles.subtitle}>
-                        Get exclusive access to Nordic Crime Lab
-                    </Text>
-
-                    {/* Inputs */}
                     <TextInput
                         style={styles.input}
                         placeholder="Email Address"
@@ -65,18 +56,12 @@ export default function LoginScreen({ navigation }) {
                         onChangeText={setPassword}
                         secureTextEntry
                     />
-
-                    {/* Forgot Password */}
                     <TouchableOpacity>
                         <Text style={styles.forgotPassword}>Forgot password?</Text>
                     </TouchableOpacity>
-
-                    {/* Login Button */}
                     <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                         <Text style={styles.loginButtonText}>Login</Text>
                     </TouchableOpacity>
-
-                    {/* Sign Up Redirect */}
                     <Text style={styles.signupText}>
                         New to Nordic Crime Lab?{' '}
                         <Text

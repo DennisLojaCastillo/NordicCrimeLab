@@ -104,8 +104,6 @@ export default function SignUpScreen({ navigation }) {
                 profileImage: profileImageUrl,
                 createdAt: new Date(),
             });
-
-            navigation.replace('Home');
         } catch (error) {
             console.error('Error during sign up:', error.message);
             Alert.alert('Error', error.message);

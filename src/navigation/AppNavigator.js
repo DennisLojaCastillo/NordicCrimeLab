@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import TabNavigator from './TabNavigator';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
+            setUser(authenticatedUser);
+        });
+
+        return unsubscribe;
+    }, []);
+
     return (
         <NavigationContainer>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: true, // Aktiver header
-                    headerTitleAlign: 'center', // Justér titlen
-                    headerStyle: { backgroundColor: '#f8f8f8' },
-                    headerTintColor: '#007BFF', // Farven på pilen
-                    headerTitleStyle: { fontSize: 18, fontWeight: 'bold' },
-                }}
-            >
-                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Create account' }} />
-                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {user ? (
+                    <Stack.Screen name="MainApp" component={TabNavigator} />
+                ) : (
+                    <>
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="SignUp" component={SignUpScreen} />
+                    </>
+                )}
             </Stack.Navigator>
-
         </NavigationContainer>
     );
 }

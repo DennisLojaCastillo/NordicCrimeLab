@@ -1,48 +1,69 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
         backgroundColor: '#f8f8f8',
+        padding: 20,
     },
     title: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 16,
         textAlign: 'center',
+        marginBottom: 20,
+        marginTop: 52,
+        color: '#333',
     },
     profileImage: {
-        width: 100,
-        height: 100,
+        width: 150,
+        height: 150,
         borderRadius: 50,
         alignSelf: 'center',
-        marginBottom: 16,
+        marginBottom: 10,
     },
-    imageButton: {
-        alignSelf: 'center',
-        marginBottom: 16,
-    },
-    imageButtonText: {
+    changePhotoText: {
+        textAlign: 'center',
+        fontSize: 16,
         color: '#007BFF',
+        marginBottom: 20,
     },
     input: {
-        height: 40,
-        borderColor: '#ccc',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 15,
+        marginBottom: 15,
+        fontSize: 16,
         borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-        marginBottom: 16,
+        borderColor: '#ddd',
     },
-    deleteButton: {
-        marginTop: 16,
-        padding: 12,
-        backgroundColor: '#FF3B30',
-        borderRadius: 8,
+    textArea: {
+        height: 100,
+        textAlignVertical: 'top',
     },
-    deleteButtonText: {
+    saveButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    saveButtonText: {
         color: '#fff',
-        textAlign: 'center',
+        fontSize: 16,
         fontWeight: 'bold',
     },
+    deleteButton: {
+        backgroundColor: 'red',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    deleteButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
 });
+
+export default styles;
