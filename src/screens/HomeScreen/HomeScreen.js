@@ -1,43 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import {View, Text } from 'react-native';
-import styles from './HomeScreen.styles';
-import { auth, db } from '../../config/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import Layout from '../../components/Layout/Layouts'; // Brug Layout-komponenten
+import React from 'react';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native'; // Tilføj Alert her
+import { auth } from '../../config/firebase';
+import { signOut } from 'firebase/auth';
 
-export default function HomeScreen() {
-    const [userData, setUserData] = useState(null);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const user = auth.currentUser;
-                if (user) {
-                    const userDocRef = doc(db, 'users', user.uid);
-                    const userDocSnap = await getDoc(userDocRef);
-
-                    if (userDocSnap.exists()) {
-                        setUserData(userDocSnap.data());
-                    } else {
-                        console.log('No user data found!');
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error.message);
-            }
-        };
-
-        fetchUserData();
-    }, []);
+export default function HomeScreen({ navigation }) {
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            navigation.replace('Login'); // Naviger direkte til LoginScreen
+        } catch (error) {
+            console.error('Logout error:', error.message);
+            // Eventuelt vis en fejlmeddelelse på skærmen
+        }
+    };
+    
 
     return (
-        <Layout>
-            <View style={styles.header}>
-                {/* Velkomsttekst */}
-                <View style={styles.greetingContainer}>
-                    {userData && <Text style={styles.welcomeText}>Hello, {userData.name}</Text>}
-                </View>
-            </View>
-        </Layout>
+        <View style={styles.container}>
+            <Text style={styles.text}>This is the Home Screen</Text>
+            <Button title="Logout" onPress={handleLogout} />
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+    },
+    text: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+});

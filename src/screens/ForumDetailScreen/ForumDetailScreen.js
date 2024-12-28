@@ -1,17 +1,23 @@
 import React from 'react';
-import { Text } from 'react-native';
-import styles from './ForumDetailScreen.styles';
-import Layout from '../../components/Layout/Layouts'; // Import Layout-komponenten
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function ForumDetailScreen({ route }) {
-    const { forumId } = route.params; // Modtag forumId fra navigation
-
-    // Her kan vi forberede os på at hente data for det specifikke forum
+export default function ForumDetailScreen() {
     return (
-        <Layout>
-            <Text style={styles.text}>Forum ID: {forumId}</Text>
+        <View style={styles.container}>
             <Text style={styles.text}>This is the Forum Detail Screen</Text>
-        </Layout>
+        </View>
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+    },
+    text: {
+        fontSize: 18,
+        color: '#333',
+    },
+});

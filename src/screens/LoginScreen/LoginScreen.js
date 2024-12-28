@@ -1,55 +1,93 @@
 import React, { useState } from 'react';
-import { Text, TextInput, Button, Alert } from 'react-native';
-import styles from './LoginScreen.styles';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
+} from 'react-native';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import Layout from '../../components/layouts'; // Brug Layout-komponenten
+import styles from './LoginScreen.styles'; // Import styles
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-        if (!email || !password) {
-            Alert.alert('Error', 'Please fill in all fields');
-            return;
-        }
-
         try {
-            // Firebase Login
             await signInWithEmailAndPassword(auth, email, password);
-            Alert.alert('Success', 'Logged in successfully');
-            // Automatisk redirect håndteres via AppNavigator.js
+            navigation.replace('Home');
         } catch (error) {
-            console.error('Login error:', error.message);
-            Alert.alert('Error', 'Invalid email or password');
+            console.error('Error logging in:', error.message);
+            alert('Invalid email or password.');
         }
     };
 
     return (
-        <Layout>
-            <Text style={styles.title}>Login</Text>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    {/* Logo */}
+                    <Image
+                        source={require('../../../assets/logo/main_logo.png')}
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
+                    {/* Welcome Text */}
+                    <Text style={styles.title}>Welcome back!</Text>
+                    <Text style={styles.subtitle}>
+                        Get exclusive access to Nordic Crime Lab
+                    </Text>
 
-            <Button title="Login" onPress={handleLogin} />
+                    {/* Inputs */}
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email Address"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
 
-            <Text style={styles.link} onPress={() => navigation.navigate('SignUp')}>
-                Don't have an account? Sign Up
-            </Text>
-        </Layout>
+                    {/* Forgot Password */}
+                    <TouchableOpacity>
+                        <Text style={styles.forgotPassword}>Forgot password?</Text>
+                    </TouchableOpacity>
+
+                    {/* Login Button */}
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    </TouchableOpacity>
+
+                    {/* Sign Up Redirect */}
+                    <Text style={styles.signupText}>
+                        New to Nordic Crime Lab?{' '}
+                        <Text
+                            style={styles.signupLink}
+                            onPress={() => navigation.navigate('SignUp')}
+                        >
+                            Sign Up
+                        </Text>
+                    </Text>
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
