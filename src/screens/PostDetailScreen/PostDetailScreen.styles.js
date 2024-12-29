@@ -16,39 +16,61 @@ export default StyleSheet.create({
         marginTop: 10,
         paddingBottom: 20,
     },
-    forumTitle: {
+    postTitle: {
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 5,
+    },
+    postContent: {
+        fontSize: 16,
+        marginBottom: 20,
         color: '#333',
     },
-    forumCategory: {
+    commentCard: {
+        padding: 15,
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        marginBottom: 10,
+    },
+    commentAuthor: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    commentContent: {
+        fontSize: 14,
+        color: '#555',
+    },
+    noCommentsText: {
         fontSize: 16,
-        color: '#666',
-        marginBottom: 20,
+        color: '#888',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    addCommentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+        paddingTop: 10,
+        borderTopWidth: 1,
+        borderColor: '#ccc',
     },
     input: {
+        flex: 1,
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 8,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        padding: 10,
         fontSize: 16,
-        marginBottom: 12,
         backgroundColor: '#f9f9f9',
+        marginRight: 10,
     },
-    contentInput: {
-        height: 100,
-        textAlignVertical: 'top',
-    },
-    createButton: {
+    addCommentButton: {
         backgroundColor: '#007BFF',
-        padding: 15,
+        padding: 10,
         borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 20,
     },
-    createButtonText: {
+    addCommentButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',

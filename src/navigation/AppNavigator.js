@@ -24,7 +24,9 @@ export default function AppNavigator() {
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {user ? (
-                    <Stack.Screen name="MainApp" component={TabNavigator} />
+                    <>
+                        <Stack.Screen name="MainApp" component={TabNavigator} />                        
+                    </>
                 ) : (
                     <>
                         <Stack.Screen name="Login" component={LoginScreen} />

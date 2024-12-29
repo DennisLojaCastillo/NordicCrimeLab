@@ -7,20 +7,12 @@ export default StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         paddingHorizontal: 15,
-        marginTop: 70,
+        marginTop: 10,
         backgroundColor: '#fff',
         elevation: 2,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-        textAlign: 'center',
-        flex: 1,
-        marginLeft: 20,
     },
     profileInfo: {
         alignItems: 'center',

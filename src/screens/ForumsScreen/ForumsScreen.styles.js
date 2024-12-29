@@ -1,34 +1,36 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    title: {
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        padding: 10,
+        paddingTop: 80,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    screenTitle: {                
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 16,
+        marginBottom: 10,        
+        textAlign: 'center',
     },
-    listContainer: {
-        paddingBottom: 16,
-    },
-    forumItem: {
-        backgroundColor: '#fff',
+    forumCard: {
+        padding: 15,
+        marginBottom: 10,
+        backgroundColor: '#f8f8f8',
         borderRadius: 8,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        elevation: 2,
     },
-    forumName: {
+    forumTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
     },
-    forumDescription: {
+    forumCategory: {
         fontSize: 14,
         color: '#666',
-        marginTop: 4,
     },
 });

@@ -132,8 +132,7 @@ export default function EditProfileScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Edit Profile</Text>
+        <View style={styles.container}>            
 
             <TouchableOpacity onPress={pickImage}>
                 <Image

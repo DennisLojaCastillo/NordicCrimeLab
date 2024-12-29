@@ -17,7 +17,7 @@ export default function ProfileScreenNavigator() {
                 name="EditUserProfile"
                 component={EditProfileScreen}
                 options={{ headerShown: false }}
-            />
+            />            
         </Stack.Navigator>
     );
 }
