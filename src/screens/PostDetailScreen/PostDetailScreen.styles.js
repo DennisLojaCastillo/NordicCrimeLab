@@ -13,13 +13,12 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     backButton: {
-        marginTop: 10,
-        paddingBottom: 20,
+        marginBottom: 20,
     },
     postTitle: {
         fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 10,
     },
     postContent: {
         fontSize: 16,
@@ -27,10 +26,21 @@ export default StyleSheet.create({
         color: '#333',
     },
     commentCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 15,
         backgroundColor: '#f9f9f9',
         borderRadius: 8,
         marginBottom: 10,
+    },
+    commentProfileImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginRight: 10,
+    },
+    commentDetails: {
+        flex: 1,
     },
     commentAuthor: {
         fontSize: 14,
@@ -41,36 +51,56 @@ export default StyleSheet.create({
         fontSize: 14,
         color: '#555',
     },
+    editedText: {
+        fontSize: 12,
+        color: '#999',
+        marginLeft: 5,
+    },
+    optionsButton: {
+        marginLeft: 10,
+    },
     noCommentsText: {
         fontSize: 16,
         color: '#888',
         textAlign: 'center',
         marginTop: 20,
     },
-    addCommentContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-        paddingTop: 10,
-        borderTopWidth: 1,
-        borderColor: '#ccc',
+    modal: {
+        justifyContent: 'center',
+        margin: 0,
     },
-    input: {
-        flex: 1,
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        width: '90%',
+        alignSelf: 'center',
+    },
+    modalInput: {
+        width: '100%',
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 8,
         padding: 10,
         fontSize: 16,
         backgroundColor: '#f9f9f9',
-        marginRight: 10,
+        textAlignVertical: 'top',
+        height: 100,
+        marginBottom: 15,
     },
-    addCommentButton: {
+    modalButton: {
         backgroundColor: '#007BFF',
         padding: 10,
         borderRadius: 8,
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 10,
     },
-    addCommentButtonText: {
+    deleteButton: {
+        backgroundColor: '#FF3B30',
+    },
+    modalButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',

@@ -7,6 +7,7 @@ import {
     FlatList,
     Alert,
     ActivityIndicator,
+    Image,
 } from 'react-native';
 import { db, auth } from '../../config/firebase';
 import {
@@ -17,18 +18,21 @@ import {
     onSnapshot,
     getDoc,
     addDoc,
+    updateDoc,
+    deleteDoc,
     serverTimestamp,
 } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-
+import Modal from 'react-native-modal';
 import styles from './PostDetailScreen.styles';
 
 export default function PostDetailScreen({ route, navigation }) {
-    const { postId, postTitle, postContent } = route.params; // Hent post-id og data
-    const [comments, setComments] = useState([]); // State til kommentarer
-    const [newComment, setNewComment] = useState(''); // State til ny kommentar
-    const [loading, setLoading] = useState(true); // Loading state
+    const { postId, postTitle, postContent } = route.params;
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editingComment, setEditingComment] = useState(null);
 
     useEffect(() => {
         const fetchComments = () => {
@@ -37,16 +41,35 @@ export default function PostDetailScreen({ route, navigation }) {
                 where('postId', '==', postId)
             );
 
-            const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
-                const fetchedComments = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+            const unsubscribe = onSnapshot(commentsQuery, async (snapshot) => {
+                const fetchedComments = await Promise.all(
+                    snapshot.docs.map(async (docSnap) => {
+                        const commentData = docSnap.data();
+                        const userDocRef = doc(db, 'users', commentData.createdBy);
+                        const userDocSnap = await getDoc(userDocRef);
+
+                        const userData = userDocSnap.exists()
+                            ? userDocSnap.data()
+                            : { profileImage: null, firstName: 'Unknown', lastName: '' };
+
+                        return {
+                            id: docSnap.id,
+                            ...commentData,
+                            user: {
+                                profileImage: userData.profileImage,
+                                firstName: userData.firstName,
+                                lastName: userData.lastName,
+                            },
+                        };
+                    })
+                );
+
+                fetchedComments.sort((a, b) => a.createdAt.toMillis() - b.createdAt.toMillis());
                 setComments(fetchedComments);
                 setLoading(false);
             });
 
-            return unsubscribe; // Fjern lytter ved unmount
+            return unsubscribe;
         };
 
         fetchComments();
@@ -57,34 +80,66 @@ export default function PostDetailScreen({ route, navigation }) {
             Alert.alert('Error', 'Comment cannot be empty.');
             return;
         }
-    
+
         try {
-            const user = auth.currentUser;
-            const userDocRef = doc(db, 'users', user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-    
-            if (!userDocSnap.exists()) {
-                Alert.alert('Error', 'User data not found.');
-                return;
+            if (editingComment) {
+                await updateDoc(doc(db, 'comments', editingComment.id), {
+                    content: newComment,
+                    edited: true,
+                    updatedAt: serverTimestamp(),
+                });
+                setEditingComment(null);
+            } else {
+                const user = auth.currentUser;
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (!userDocSnap.exists()) {
+                    Alert.alert('Error', 'User data not found.');
+                    return;
+                }
+
+                const userData = userDocSnap.data();
+
+                await addDoc(collection(db, 'comments'), {
+                    postId,
+                    content: newComment,
+                    createdBy: user.uid,
+                    createdByName: `${userData.firstName} ${userData.lastName}`,
+                    createdAt: serverTimestamp(),
+                    edited: false,
+                });
             }
-    
-            const userData = userDocSnap.data();
-    
-            await addDoc(collection(db, 'comments'), {
-                postId,
-                content: newComment,
-                createdBy: user.uid,
-                createdByName: `${userData.firstName} ${userData.lastName}`, // Brug fornavn og efternavn
-                createdAt: serverTimestamp(),
-            });
-    
-            setNewComment(''); // Nulstil inputfelt
+
+            setNewComment('');
+            setModalVisible(false);
         } catch (error) {
-            console.error('Error adding comment:', error.message);
-            Alert.alert('Error', 'Could not add comment.');
+            console.error('Error adding/editing comment:', error.message);
+            Alert.alert('Error', 'Could not add/edit comment.');
         }
     };
-    
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await deleteDoc(doc(db, 'comments', commentId));            
+            setModalVisible(false);
+        } catch (error) {
+            console.error('Error deleting comment:', error.message);
+            Alert.alert('Error', 'Could not delete comment.');
+        }
+    };
+
+    const openEditModal = (comment) => {
+        setEditingComment(comment);
+        setNewComment(comment.content);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setEditingComment(null);
+        setNewComment('');
+        setModalVisible(false);
+    };
 
     if (loading) {
         return (
@@ -96,46 +151,72 @@ export default function PostDetailScreen({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
             </TouchableOpacity>
-            {/* Post Info */}
             <Text style={styles.postTitle}>{postTitle}</Text>
             <Text style={styles.postContent}>{postContent}</Text>
 
-            {/* Kommentarer */}
             <FlatList
                 data={comments}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.commentCard}>
-                        <Text style={styles.commentAuthor}>{item.createdByName}</Text>
-                        <Text style={styles.commentContent}>{item.content}</Text>
+                        <Image
+                            source={{ uri: item.user.profileImage || 'https://via.placeholder.com/50' }}
+                            style={styles.commentProfileImage}
+                        />
+                        <View style={styles.commentDetails}>
+                            <Text style={styles.commentAuthor}>
+                                {item.user.firstName} {item.user.lastName}
+                                {item.edited && <Text style={styles.editedText}> (edited)</Text>}
+                            </Text>
+                            <Text style={styles.commentContent}>{item.content}</Text>
+                        </View>
+                        {item.createdBy === auth.currentUser.uid && (
+                            <TouchableOpacity
+                                onPress={() => openEditModal(item)}
+                                style={styles.optionsButton}
+                            >
+                                <Ionicons name="ellipsis-horizontal" size={20} color="#555" />
+                            </TouchableOpacity>
+                        )}
                     </View>
                 )}
                 ListEmptyComponent={
-                    <Text style={styles.noCommentsText}>
-                        No comments yet. Be the first to comment!
-                    </Text>
+                    <Text style={styles.noCommentsText}>No comments yet. Be the first to comment!</Text>
                 }
             />
 
-            {/* Tilføj Kommentar */}
-            <View style={styles.addCommentContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Write a comment..."
-                    value={newComment}
-                    onChangeText={setNewComment}
-                />
-                <TouchableOpacity
-                    style={styles.addCommentButton}
-                    onPress={handleAddComment}>
-                    <Text style={styles.addCommentButtonText}>Add</Text>
-                </TouchableOpacity>
-            </View>
+            <Modal
+                isVisible={modalVisible}
+                onBackdropPress={closeModal}
+                style={styles.modal}
+            >
+                <View style={styles.modalContent}>
+                    <TextInput
+                        style={styles.modalInput}
+                        placeholder="Edit your comment..."
+                        value={newComment}
+                        multiline
+                        onChangeText={setNewComment}
+                    />
+                    <TouchableOpacity
+                        onPress={() => {
+                            handleAddComment();
+                        }}
+                        style={styles.modalButton}
+                    >
+                        <Text style={styles.modalButtonText}>Update</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => handleDeleteComment(editingComment.id)}
+                        style={[styles.modalButton, styles.deleteButton]}
+                    >
+                        <Text style={styles.modalButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </View>
     );
 }

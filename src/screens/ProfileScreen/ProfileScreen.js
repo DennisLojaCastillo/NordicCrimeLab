@@ -28,7 +28,7 @@ export default function ProfileScreen({ navigation }) {
         const userId = auth.currentUser.uid;
         const userDocRef = doc(db, 'users', userId);
         const forumsQuery = query(collection(db, 'forums'), where('createdBy', '==', userId));
-
+    
         // Lyt til brugerdata
         const unsubscribeUser = onSnapshot(userDocRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -37,7 +37,7 @@ export default function ProfileScreen({ navigation }) {
                 console.log('No user data found!');
             }
         });
-
+    
         // Lyt til fora oprettet af brugeren
         const unsubscribeForums = onSnapshot(forumsQuery, (querySnapshot) => {
             const forums = [];
@@ -47,12 +47,13 @@ export default function ProfileScreen({ navigation }) {
             setUserForums(forums);
             setLoading(false);
         });
-
+    
         return () => {
-            unsubscribeUser();
-            unsubscribeForums();
+            unsubscribeUser(); // Afslut bruger-lytteren
+            unsubscribeForums(); // Afslut forums-lytteren
         };
     }, []);
+    
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -60,11 +61,12 @@ export default function ProfileScreen({ navigation }) {
 
     const handleLogout = async () => {
         try {
-            await signOut(auth);
+            await signOut(auth); // Logger brugeren ud            
         } catch (error) {
             console.error('Error logging out:', error.message);
         }
     };
+    
 
     const renderForumItem = ({ item }) => (
         <TouchableOpacity
