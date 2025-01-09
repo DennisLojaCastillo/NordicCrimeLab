@@ -12,7 +12,12 @@ const Stack = createNativeStackNavigator();
 
 export default function ForumNavigator() {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+            initialRouteName="ForumsScreen"
+            screenOptions={{
+                headerShown: false
+            }}
+        >
             <Stack.Screen
                 name="ForumsScreen"
                 component={ForumsScreen}

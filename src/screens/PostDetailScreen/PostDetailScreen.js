@@ -11,6 +11,7 @@ import {
     SafeAreaView,
     KeyboardAvoidingView,
     Platform,
+    Keyboard,
 } from 'react-native';
 import { db, auth } from '../../config/firebase';
 import {
@@ -25,14 +26,17 @@ import {
     deleteDoc,
     serverTimestamp,
     orderBy,
+    getDocs,
 } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import styles from './PostDetailScreen.styles';
 import { useFocusEffect } from '@react-navigation/native';
+import { saveNotification, NOTIFICATION_TYPES } from '../../services/NotificationService';
+import Layout from '../../components/Layout/Layouts';
 
 export default function PostDetailScreen({ route, navigation }) {
-    const { postId, postTitle, postContent } = route.params;
+    const { postId, postTitle, postContent, forumId } = route.params;
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -40,102 +44,156 @@ export default function PostDetailScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingComment, setEditingComment] = useState(null);
     const [users, setUsers] = useState({});
+    const [isMember, setIsMember] = useState(false);
 
     useFocusEffect(
         React.useCallback(() => {
-            // Lyt til ændringer i post-dokumentet
-            const postRef = doc(db, 'posts', postId);
-            const unsubscribePost = onSnapshot(postRef, (doc) => {
-                if (doc.exists()) {
-                    setPost({ id: doc.id, ...doc.data() });
-                }
-            });
+            const checkMembershipAndLoadData = async () => {
+                try {
+                    // Tjek forum membership først
+                    const forumRef = doc(db, 'forums', forumId);
+                    const forumDoc = await getDoc(forumRef);
+                    const forumData = forumDoc.data();
+                    
+                    // Check if user is member OR creator of the forum
+                    const isUserMember = forumData.members?.includes(auth.currentUser.uid) || 
+                                       forumData.createdBy === auth.currentUser.uid;
+                    
+                    setIsMember(isUserMember);
 
-            // Lyt til ændringer i kommentarer
-            const commentsQuery = query(
-                collection(db, 'comments'),
-                where('postId', '==', postId),
-                orderBy('createdAt', 'asc')
-            );
+                    // Hvis bruger er medlem eller creator, load data
+                    if (isUserMember) {
+                        const commentsQuery = query(
+                            collection(db, 'comments'),
+                            where('postId', '==', postId),
+                            orderBy('createdAt', 'asc')
+                        );
 
-            const unsubscribeComments = onSnapshot(commentsQuery, async (snapshot) => {
-                const commentsData = [];
-                const userIds = new Set();
+                        const postRef = doc(db, 'posts', postId);
+                        const postDoc = await getDoc(postRef);
+                        if (postDoc.exists()) {
+                            setPost(postDoc.data());
+                        }
 
-                snapshot.forEach((doc) => {
-                    const commentData = { id: doc.id, ...doc.data() };
-                    commentsData.push(commentData);
-                    userIds.add(commentData.createdBy);
-                });
+                        const unsubscribe = onSnapshot(commentsQuery, async (snapshot) => {
+                            const commentsData = [];
+                            const userIds = new Set();
 
-                // Hent brugerdata for alle unikke bruger-IDs
-                const usersData = {};
-                for (const userId of userIds) {
-                    const userDoc = await getDoc(doc(db, 'users', userId));
-                    if (userDoc.exists()) {
-                        usersData[userId] = userDoc.data();
+                            snapshot.forEach(doc => {
+                                const commentData = doc.data();
+                                commentsData.push({ id: doc.id, ...commentData });
+                                userIds.add(commentData.createdBy);
+                            });
+
+                            const usersData = {};
+                            for (const userId of userIds) {
+                                const userDoc = await getDoc(doc(db, 'users', userId));
+                                if (userDoc.exists()) {
+                                    usersData[userId] = userDoc.data();
+                                }
+                            }
+
+                            setUsers(usersData);
+                            setComments(commentsData);
+                            setLoading(false);
+                        });
+
+                        return () => unsubscribe();
                     }
+                    
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error checking membership:', error);
+                    setLoading(false);
                 }
-
-                setUsers(usersData);
-                setComments(commentsData);
-                setLoading(false);
-            });
-
-            // Cleanup når komponenten unmountes
-            return () => {
-                unsubscribePost();
-                unsubscribeComments();
             };
-        }, [postId])
+
+            checkMembershipAndLoadData();
+        }, [postId, forumId])
     );
 
-    const handleAddComment = async () => {
-        if (!newComment.trim()) {
-            Alert.alert('Fejl', 'Kommentaren må ikke være tom.');
-            return;
+    // Membership alert
+    useEffect(() => {
+        if (!isMember && !loading) {
+            Alert.alert(
+                'Forum Membership Required',
+                'You need to join this forum to view its posts. Please join the forum first.',
+                [
+                    {
+                        text: 'Go Back',
+                        onPress: () => navigation.navigate('Forums', {
+                            screen: 'ForumDetailScreen',
+                            params: { forumId: forumId }
+                        }),
+                        style: 'cancel',
+                    }
+                ]
+            );
         }
+    }, [isMember, loading]);
+
+    const handleAddComment = async () => {
+        if (!newComment.trim()) return;
 
         try {
-            if (editingComment) {
-                await updateDoc(doc(db, 'comments', editingComment.id), {
-                    content: newComment,
-                    edited: true,
-                    updatedAt: serverTimestamp(),
-                });
-                setEditingComment(null);
-            } else {
-                const user = auth.currentUser;
-                const userDocRef = doc(db, 'users', user.uid);
-                const userDocSnap = await getDoc(userDocRef);
+            const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+            const userData = userDoc.data();
 
-                if (!userDocSnap.exists()) {
-                    Alert.alert('Fejl', 'Brugerdata blev ikke fundet.');
-                    return;
-                }
+            const commentRef = await addDoc(collection(db, 'comments'), {
+                postId: postId,
+                content: newComment.trim(),
+                createdBy: auth.currentUser.uid,
+                createdAt: serverTimestamp(),
+                edited: false
+            });
 
-                const userData = userDocSnap.data();
+            // Hent forum medlemmer og send notifications
+            const forumRef = doc(db, 'forums', forumId);
+            const forumDoc = await getDoc(forumRef);
+            const forumData = forumDoc.data();
+            
+            // Send notifications til alle forum medlemmer (undtagen en selv)
+            const membersToNotify = [...(forumData.members || []), forumData.createdBy]
+                .filter(memberId => 
+                    memberId !== auth.currentUser.uid && 
+                    memberId !== post.createdBy
+                );
 
-                await addDoc(collection(db, 'comments'), {
-                    postId,
-                    content: newComment,
-                    createdBy: user.uid,
-                    createdByName: `${userData.firstName} ${userData.lastName}`,
-                    createdAt: serverTimestamp(),
-                    edited: false,
-                });
+            for (const memberId of membersToNotify) {
+                await saveNotification(
+                    memberId,
+                    NOTIFICATION_TYPES.COMMENT,
+                    {
+                        postId: postId,
+                        forumId: forumId,
+                        postTitle: post.title || postTitle,
+                        senderName: `${userData.firstName} ${userData.lastName}`
+                    }
+                );
+            }
 
-                const postRef = doc(db, 'posts', postId);
-                await updateDoc(postRef, {
-                    commentCount: (post.commentCount || 0) + 1
-                });
+            // Separat notification til post ejeren (hvis det ikke er en selv)
+            if (post.createdBy !== auth.currentUser.uid) {
+                await saveNotification(
+                    post.createdBy,
+                    NOTIFICATION_TYPES.COMMENT,
+                    {
+                        postId: postId,
+                        forumId: forumId,
+                        postTitle: post.title || postTitle,
+                        senderName: `${userData.firstName} ${userData.lastName}`
+                    }
+                );
             }
 
             setNewComment('');
-            setModalVisible(false);
+            if (editingComment) {
+                setEditingComment(null);
+                setModalVisible(false);
+            }
         } catch (error) {
-            console.error('Fejl ved tilføjelse/redigering af kommentar:', error.message);
-            Alert.alert('Fejl', 'Kunne ikke tilføje/redigere kommentar.');
+            console.error('Error adding comment:', error);
+            Alert.alert('Error', 'Could not add comment');
         }
     };
 
@@ -169,38 +227,66 @@ export default function PostDetailScreen({ route, navigation }) {
         setModalVisible(false);
     };
 
+    if (!isMember) {
+        return null;
+    }
+
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#007BFF" />
-            </View>
+            <Layout>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#007BFF" />
+                </View>
+            </Layout>
         );
     }
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <KeyboardAvoidingView 
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-            >
+            <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <TouchableOpacity 
+                        onPress={() => {
+                            if (route.params?.fromNotification) {
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [
+                                        { 
+                                            name: 'Forums',
+                                            state: {
+                                                routes: [
+                                                    { name: 'ForumsScreen' }
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                });
+                            } else {
+                                navigation.goBack();
+                            }
+                        }} 
+                        style={styles.backButton}
+                    >
                         <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
                     </TouchableOpacity>
-                </View>
-
-                <View style={styles.contentContainer}>
-                    <Text style={styles.postTitle}>{postTitle}</Text>
-                    <Text style={styles.postContent}>{postContent}</Text>
-                    <View style={styles.separator} />
+                    
+                    <Text style={styles.headerTitle} numberOfLines={1}>
+                        {postTitle}
+                    </Text>
                 </View>
 
                 <FlatList
                     style={styles.commentSection}
                     data={comments}
+                    ListHeaderComponent={() => (
+                        <View style={styles.contentContainer}>
+                            <Text style={styles.postContent}>{postContent}</Text>
+                            <View style={styles.separator} />
+                        </View>
+                    )}
                     keyExtractor={(item) => item.id}
-                    contentContainerStyle={{ paddingBottom: 90 }}
+                    contentContainerStyle={{ paddingBottom: 120 }}
+                    keyboardShouldPersistTaps="handled"
                     renderItem={({ item }) => {
                         const userData = users[item.createdBy] || {};
                         return (
@@ -236,46 +322,64 @@ export default function PostDetailScreen({ route, navigation }) {
                     }
                 />
 
-                <View style={styles.addCommentContainer}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Add a comment..."
-                        value={newComment}
-                        onChangeText={setNewComment}
-                    />
-                    <TouchableOpacity onPress={handleAddComment} style={styles.addCommentButton}>
-                        <Ionicons name="send" size={20} color="#fff" />
-                    </TouchableOpacity>
-                </View>
-
-                <Modal
-                    isVisible={modalVisible}
-                    onBackdropPress={closeModal}
-                    style={styles.modal}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
                 >
-                    <View style={styles.modalContent}>
+                    <View style={styles.addCommentContainer}>
                         <TextInput
-                            style={styles.modalInput}
-                            placeholder="Edit your comment..."
+                            style={styles.input}
+                            placeholder="Add a comment..."
                             value={newComment}
-                            multiline
                             onChangeText={setNewComment}
+                            multiline={true}
+                            maxHeight={100}
+                            blurOnSubmit={true}
+                            onSubmitEditing={Keyboard.dismiss}
+                            keyboardType="default"
+                            autoCorrect={false}
+                            autoCapitalize="none"
                         />
-                        <TouchableOpacity
-                            onPress={handleAddComment}
-                            style={styles.modalButton}
+                        <TouchableOpacity 
+                            onPress={() => {
+                                handleAddComment();
+                                Keyboard.dismiss();
+                            }} 
+                            style={styles.addCommentButton}
                         >
-                            <Text style={styles.modalButtonText}>Update</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => handleDeleteComment(editingComment.id)}
-                            style={[styles.modalButton, styles.deleteButton]}
-                        >
-                            <Text style={styles.modalButtonText}>Delete</Text>
+                            <Ionicons name="send" size={20} color="#fff" />
                         </TouchableOpacity>
                     </View>
-                </Modal>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </View>
+
+            <Modal
+                isVisible={modalVisible}
+                onBackdropPress={closeModal}
+                style={styles.modal}
+            >
+                <View style={styles.modalContent}>
+                    <TextInput
+                        style={styles.modalInput}
+                        placeholder="Edit your comment..."
+                        value={newComment}
+                        multiline
+                        onChangeText={setNewComment}
+                    />
+                    <TouchableOpacity
+                        onPress={handleAddComment}
+                        style={styles.modalButton}
+                    >
+                        <Text style={styles.modalButtonText}>Update</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => handleDeleteComment(editingComment.id)}
+                        style={[styles.modalButton, styles.deleteButton]}
+                    >
+                        <Text style={styles.modalButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }

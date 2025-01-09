@@ -15,6 +15,8 @@ import Modal from 'react-native-modal';
 import { db, auth } from '../../config/firebase';
 import { doc, getDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, onSnapshot, query, collection, where, orderBy } from 'firebase/firestore';
 import styles from './ResearchDetailScreen.styles';
+import { NOTIFICATION_TYPES } from '../../services/NotificationService';
+import { saveNotification } from '../../services/NotificationService';
 
 export default function ResearchDetailScreen({ route, navigation }) {
     const { researchId } = route.params;
@@ -43,32 +45,40 @@ export default function ResearchDetailScreen({ route, navigation }) {
 
     const handleLike = async () => {
         try {
-            const docRef = doc(db, 'research', researchId);
-            if (hasLiked) {
-                // Unlike
-                await updateDoc(docRef, {
-                    likes: research.likes - 1,
-                    likedBy: arrayRemove(currentUser.uid)
+            const researchRef = doc(db, 'research', researchId);
+            if (!hasLiked) {
+                // Like research
+                await updateDoc(researchRef, {
+                    likes: (research.likes || 0) + 1,
+                    likedBy: arrayUnion(auth.currentUser.uid)
                 });
-                setResearch(prev => ({
-                    ...prev,
-                    likes: prev.likes - 1
-                }));
+
+                // Send notification til research ejeren
+                if (research.createdBy !== auth.currentUser.uid) {
+                    const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+                    const userData = userDoc.data();
+                    
+                    await saveNotification(
+                        research.createdBy,
+                        NOTIFICATION_TYPES.RESEARCH_LIKE,
+                        {
+                            researchId: researchId,
+                            researchTitle: research.title,
+                            likerName: `${userData.firstName} ${userData.lastName}`
+                        }
+                    );
+                }
             } else {
-                // Like
-                await updateDoc(docRef, {
-                    likes: research.likes + 1,
-                    likedBy: arrayUnion(currentUser.uid)
+                // Unlike research
+                await updateDoc(researchRef, {
+                    likes: Math.max((research.likes || 0) - 1, 0), // Sikrer at likes ikke går under 0
+                    likedBy: arrayRemove(auth.currentUser.uid)
                 });
-                setResearch(prev => ({
-                    ...prev,
-                    likes: prev.likes + 1
-                }));
             }
             setHasLiked(!hasLiked);
         } catch (error) {
             console.error('Error updating like:', error);
-            Alert.alert('Error', 'Failed to update like');
+            Alert.alert('Error', 'Could not update like');
         }
     };
 
@@ -145,6 +155,16 @@ export default function ResearchDetailScreen({ route, navigation }) {
                     <View style={styles.metaInfo}>
                         <View style={styles.categoryContainer}>
                             <Text style={styles.categoryTag}>{research.category}</Text>
+                        </View>
+                        <View style={styles.likesContainer}>
+                            <Ionicons 
+                                name="heart" 
+                                size={16} 
+                                color="#ff4444" 
+                            />
+                            <Text style={styles.likesCount}>
+                                {research.likes || 0} likes
+                            </Text>
                         </View>
                     </View>
 

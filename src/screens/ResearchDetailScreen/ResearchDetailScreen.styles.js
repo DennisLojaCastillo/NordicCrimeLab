@@ -125,4 +125,14 @@ export default StyleSheet.create({
     deleteText: {
         color: '#ff4444',
     },
+    likesContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 10,
+    },
+    likesCount: {
+        marginLeft: 5,
+        color: '#666',
+        fontSize: 14,
+    },
 }); 

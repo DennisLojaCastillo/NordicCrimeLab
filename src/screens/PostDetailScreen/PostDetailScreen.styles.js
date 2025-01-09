@@ -4,28 +4,61 @@ export default StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#fff',
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     container: {
         flex: 1,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0f0f0',
         backgroundColor: '#fff',
+    },
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginLeft: 15,
+        flex: 1,
+        color: '#333',
+    },
+    mainContainer: {
+        flex: 1,
+        position: 'relative',
+    },
+    commentSection: {
+        flex: 1,
+    },
+    addCommentContainer: {
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#f0f0f0',
+        padding: 10,
+        paddingBottom: Platform.OS === 'ios' ? 25 : 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    input: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+        borderRadius: 20,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        fontSize: 16,
+        backgroundColor: '#f9f9f9',
+        marginRight: 10,
+        maxHeight: 100,
+        minHeight: 40,
     },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-    backButton: {
-        padding: 8,
     },
     contentContainer: {
         padding: 15,
@@ -42,10 +75,6 @@ export default StyleSheet.create({
         lineHeight: 22,
         color: '#666',
         marginBottom: 15,
-    },
-    commentSection: {
-        flex: 1,
-        marginTop: 5,
     },
     commentCard: {
         flexDirection: 'row',
@@ -150,36 +179,6 @@ export default StyleSheet.create({
         fontWeight: '600',
     },
     // Comment input container
-    addCommentContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 15,
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#f0f0f0',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: -2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 4,
-            },
-        }),
-    },
-    input: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#e0e0e0',
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        fontSize: 16,
-        backgroundColor: '#f9f9f9',
-        marginRight: 10,
-    },
     addCommentButton: {
         backgroundColor: '#007BFF',
         width: 40,
@@ -187,17 +186,6 @@ export default StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 3,
-            },
-        }),
     },
     addCommentButtonText: {
         color: '#fff',

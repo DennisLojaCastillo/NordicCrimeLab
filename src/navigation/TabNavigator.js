@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db, auth } from '../config/firebase';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ForumNavigator from './ForumNavigator';
 import ResearchNavigator from './ResearchNavigator';
 import NotificationsScreen from '../screens/NotificationsScreen/NotificationsScreen';
 import ProfileScreenNavigator from './ProfileScreenNavigator';
+import { useNotifications } from '../context/NotificationContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+    const { unreadCount } = useNotifications();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -35,9 +40,43 @@ export default function TabNavigator() {
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Tab.Screen name="Forums" component={ForumNavigator} options={{ headerShown: false }} />
+            <Tab.Screen 
+                name="Forums" 
+                component={ForumNavigator} 
+                options={{ 
+                    headerShown: false,
+                    tabBarPress: () => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [
+                                { 
+                                    name: 'Forums',
+                                    state: {
+                                        routes: [
+                                            { name: 'ForumsScreen' }
+                                        ]
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                }} 
+            />
             <Tab.Screen name="Research" component={ResearchNavigator} options={{ headerShown: false }} />
-            <Tab.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+            <Tab.Screen 
+                name="Notifications" 
+                component={NotificationsScreen} 
+                options={{ 
+                    headerShown: false,
+                    tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+                    tabBarBadgeStyle: { 
+                        backgroundColor: '#FF3B30',
+                        minWidth: 16,
+                        minHeight: 16,
+                        borderRadius: 8,
+                    }
+                }} 
+            />
             <Tab.Screen name="Profile" component={ProfileScreenNavigator} options={{ headerShown: false }} />
         </Tab.Navigator>
     );

@@ -28,6 +28,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from './ForumDetailScreen.styles';
 import Modal from 'react-native-modal';
+import { NOTIFICATION_TYPES } from '../../services/NotificationService';
+import { saveNotification } from '../../services/NotificationService';
 
 export default function ForumDetailScreen({ route, navigation }) {
     const { forumId } = route.params;
@@ -75,7 +77,7 @@ export default function ForumDetailScreen({ route, navigation }) {
                         const data = forumSnap.data();
                         setForumData(data);
                         setIsMember(
-                            data.members?.includes(auth.currentUser.uid) || 
+                            (data.members || []).includes(auth.currentUser.uid) || 
                             data.createdBy === auth.currentUser.uid
                         );
                     }
@@ -106,26 +108,41 @@ export default function ForumDetailScreen({ route, navigation }) {
     );
 
     const toggleJoinLeaveForum = async () => {
-        if (forumData?.createdBy === auth.currentUser.uid) {
-            Alert.alert('Notice', 'You cannot leave a forum you created.');
-            return;
-        }
-
         try {
             const forumRef = doc(db, 'forums', forumId);
-            if (isMember) {
+            const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+            const userData = userDoc.data();
+
+            if (!isMember) {
+                // Join forum
                 await updateDoc(forumRef, {
-                    members: arrayRemove(auth.currentUser.uid),
-                });
-                setIsMember(false);
-            } else {
-                await updateDoc(forumRef, {
-                    members: arrayUnion(auth.currentUser.uid),
+                    members: arrayUnion(auth.currentUser.uid)
                 });
                 setIsMember(true);
+
+                // Send notification til forum ejeren med read: false
+                if (forumData.createdBy !== auth.currentUser.uid) {
+                    await saveNotification(
+                        forumData.createdBy,
+                        NOTIFICATION_TYPES.FORUM_JOIN,
+                        {
+                            forumId: forumId,
+                            forumTitle: forumData.title,
+                            joiningUserName: `${userData.firstName} ${userData.lastName}`
+                        },
+                        false  // Explicit read: false
+                    );
+                }
+            } else {
+                // Leave forum
+                await updateDoc(forumRef, {
+                    members: arrayRemove(auth.currentUser.uid)
+                });
+                setIsMember(false);
             }
         } catch (error) {
-            console.error('Error updating forum membership:', error);
+            console.error('Error toggling forum membership:', error);
+            Alert.alert('Error', 'Could not update forum membership');
         }
     };
 
@@ -220,6 +237,7 @@ export default function ForumDetailScreen({ route, navigation }) {
                                 postId: item.id,
                                 postTitle: item.title,
                                 postContent: item.content,
+                                forumId: forumId
                             })}
                             style={styles.postCard}
                         >

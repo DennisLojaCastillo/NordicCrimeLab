@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "69397280894",
+    "project_id": "nordiccrimelab",
+    "storage_bucket": "nordiccrimelab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69397280894:android:211289ae25fa21b054402f",
+        "android_client_info": {
+          "package_name": "com.nordiccrimelab.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANwgv0PB7zo-ZqrB_YJR3u_NBEFe05vMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
