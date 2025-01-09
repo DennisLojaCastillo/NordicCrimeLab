@@ -33,7 +33,6 @@ import Modal from 'react-native-modal';
 import styles from './PostDetailScreen.styles';
 import { useFocusEffect } from '@react-navigation/native';
 import { saveNotification, NOTIFICATION_TYPES } from '../../services/NotificationService';
-import Layout from '../../components/Layout/Layouts';
 
 export default function PostDetailScreen({ route, navigation }) {
     const { postId, postTitle, postContent, forumId } = route.params;
@@ -233,11 +232,11 @@ export default function PostDetailScreen({ route, navigation }) {
 
     if (loading) {
         return (
-            <Layout>
+            <SafeAreaView style={styles.safeArea}>
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color="#007BFF" />
                 </View>
-            </Layout>
+            </SafeAreaView>
         );
     }
 

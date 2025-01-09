@@ -17,8 +17,9 @@ export function NotificationProvider({ children }) {
         );
 
         const unsubscribe = onSnapshot(unreadQuery, (snapshot) => {
-            console.log("Unread count updated:", snapshot.size);
             setUnreadCount(snapshot.size);
+        }, (error) => {
+            console.error('Error listening to notifications:', error);
         });
 
         return () => unsubscribe();

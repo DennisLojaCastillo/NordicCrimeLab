@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { db, auth } from '../config/firebase';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ForumNavigator from './ForumNavigator';
 import ResearchNavigator from './ResearchNavigator';
@@ -43,24 +41,7 @@ export default function TabNavigator() {
             <Tab.Screen 
                 name="Forums" 
                 component={ForumNavigator} 
-                options={{ 
-                    headerShown: false,
-                    tabBarPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [
-                                { 
-                                    name: 'Forums',
-                                    state: {
-                                        routes: [
-                                            { name: 'ForumsScreen' }
-                                        ]
-                                    }
-                                }
-                            ],
-                        });
-                    }
-                }} 
+                options={{ headerShown: false }} 
             />
             <Tab.Screen name="Research" component={ResearchNavigator} options={{ headerShown: false }} />
             <Tab.Screen 

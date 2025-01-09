@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { View, FlatList, Alert, TouchableOpacity, SafeAreaView } from 'react-native';
 import { List, Text, ActivityIndicator } from 'react-native-paper';
-import { collection, query, where, onSnapshot, orderBy, doc, updateDoc, writeBatch, getDocs } from 'firebase/firestore';
+import { 
+    collection, 
+    query, 
+    where, 
+    onSnapshot, 
+    orderBy, 
+    getDocs,
+    writeBatch,
+    doc,
+    updateDoc 
+} from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
 import { useFocusEffect } from '@react-navigation/native';
-import Layout from '../../components/Layout/Layouts';
 import { NOTIFICATION_TYPES } from '../../services/NotificationService';
 import styles from './NotificationsScreen.styles';
 
@@ -59,20 +68,7 @@ export default function NotificationsScreen({ navigation }) {
             setLoading(false);
         });
 
-        const unreadQuery = query(
-            collection(db, 'notifications'),
-            where('recipientId', '==', auth.currentUser.uid),
-            where('read', '==', false)
-        );
-
-        const unsubscribeUnread = onSnapshot(unreadQuery, (snapshot) => {
-            console.log("Unread count in NotificationsScreen:", snapshot.size);
-        });
-
-        return () => {
-            unsubscribeNotifications();
-            unsubscribeUnread();
-        };
+        return () => unsubscribeNotifications();
     }, []);
 
     const getNotificationIcon = (type) => {
@@ -177,16 +173,16 @@ export default function NotificationsScreen({ navigation }) {
 
     if (loading) {
         return (
-            <Layout>
+            <SafeAreaView style={styles.safeArea}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" />
+                    <ActivityIndicator size="large" color="#007BFF" />
                 </View>
-            </Layout>
+            </SafeAreaView>
         );
     }
 
     return (
-        <Layout>
+        <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 {notifications.length > 0 ? (
                     <FlatList
@@ -211,6 +207,6 @@ export default function NotificationsScreen({ navigation }) {
                     <Text style={styles.noNotifications}>No notifications</Text>
                 )}
             </View>
-        </Layout>
+        </SafeAreaView>
     );
 } 
