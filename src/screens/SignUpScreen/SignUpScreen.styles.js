@@ -9,14 +9,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f8f8',
     },
     logo: {
-        width: 120,
-        height: 120,
-        marginBottom: 20,
+        width: 80,
+        height: 80,
+        marginBottom: 10,
     },
     title: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     input: {
         width: '100%',
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         fontSize: 16,
         backgroundColor: '#f9f9f9',
+        justifyContent: 'center',
     },
     aboutInput: {
         height: 80,
@@ -95,6 +96,92 @@ const styles = StyleSheet.create({
         backgroundColor: '#007BFF',
         borderRadius: 20,
         padding: 5,
+    },
+    socialButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginBottom: 24,
+    },
+    socialButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f1f1f1',
+        borderRadius: 8,
+        padding: 10,
+        width: '48%',
+    },
+    socialButtonText: {
+        marginLeft: 8,
+        fontSize: 14,
+        color: '#333',
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    loginText: {
+        fontSize: 14,
+        color: '#666',
+        marginTop: 20,
+        textAlign: 'center',
+    },
+    loginLink: {
+        color: '#007BFF',
+        fontWeight: 'bold',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        width: '80%',
+        maxHeight: '70%',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    countryItem: {
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    countryText: {
+        fontSize: 16,
+    },
+    closeButton: {
+        marginTop: 15,
+        padding: 10,
+        backgroundColor: '#007AFF',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    closeButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    placeholderText: {
+        color: '#999',
+    },
+    inputText: {
+        color: '#000',
+    },
+    loadingText: {
+        textAlign: 'center',
+        padding: 20,
+        color: '#666',
     },
 });
 

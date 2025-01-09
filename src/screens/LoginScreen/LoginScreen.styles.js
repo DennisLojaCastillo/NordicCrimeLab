@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     logo: {
-        width: 120,
-        height: 120,
+        width: 150,
+        height: 150,
         marginBottom: 20,
     },
     title: {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         marginBottom: 12,
         fontSize: 16,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#f9f9f9', 
     },
     forgotPassword: {
         alignSelf: 'flex-end',
@@ -63,6 +63,26 @@ const styles = StyleSheet.create({
     signupLink: {
         color: '#007BFF',
         fontWeight: 'bold',
+    },
+    socialButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginBottom: 20,
+    },
+    socialButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f1f1f1',
+        borderRadius: 8,
+        padding: 10,
+        width: '48%',
+    },
+    socialButtonText: {
+        marginLeft: 8,
+        fontSize: 14,
+        color: '#333',
     },
 });
 

@@ -13,8 +13,8 @@ export default function AppNavigator() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
-            setUser(authenticatedUser);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
         });
 
         return unsubscribe;
@@ -22,15 +22,25 @@ export default function AppNavigator() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator>
                 {user ? (
-                    <>
-                        <Stack.Screen name="MainApp" component={TabNavigator} />                        
-                    </>
+                    <Stack.Screen 
+                        name="MainApp" 
+                        component={TabNavigator} 
+                        options={{ headerShown: false }}
+                    />
                 ) : (
                     <>
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                        <Stack.Screen name="SignUp" component={SignUpScreen} />
+                        <Stack.Screen 
+                            name="Login" 
+                            component={LoginScreen} 
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen 
+                            name="SignUp" 
+                            component={SignUpScreen} 
+                            options={{ headerShown: false }}
+                        />
                     </>
                 )}
             </Stack.Navigator>

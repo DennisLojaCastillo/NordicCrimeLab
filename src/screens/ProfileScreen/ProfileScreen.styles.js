@@ -1,62 +1,125 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export default StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 15,
-        marginTop: 10,
-        backgroundColor: '#fff',
-        elevation: 2,
+        padding: 16,
+        paddingTop: Platform.OS === 'android' ? 16 : 8,
+        marginTop: Platform.OS === 'android' ? 30 : 0,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#333',
     },
     profileInfo: {
         alignItems: 'center',
         paddingVertical: 20,
         backgroundColor: '#fff',
-        marginBottom: 10,
     },
     profileImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 50,
-        marginBottom: 10,        
-    },
-    profileName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    aboutText: {
-        fontSize: 16,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    forumsContainer: {
-        padding: 15,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    forumCard: {
-        padding: 15,
-        marginBottom: 10,
-        backgroundColor: '#fff',
-        borderRadius: 8,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        marginBottom: 16,
+        borderWidth: 3,
+        borderColor: '#fff',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 5,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    profileName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 8,
+    },
+    aboutText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        paddingHorizontal: 32,
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e1e1e1',
+        marginBottom: 16,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: 12,
+        alignItems: 'center',
+    },
+    activeTab: {
+        borderBottomWidth: 2,
+        borderBottomColor: '#007BFF',
+    },
+    tabText: {
+        fontSize: 16,
+        color: '#666',
+    },
+    activeTabText: {
+        color: '#007BFF',
+        fontWeight: 'bold',
+    },
+    forumList: {
+        flex: 1,
+        paddingHorizontal: 16,
+    },
+    forumListContent: {
+        padding: 16,
+    },
+    forumCard: {
+        marginBottom: 16,
+        borderRadius: 12,
+        overflow: 'hidden',
         elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    forumContent: {
+        padding: 16,
+        minHeight: 100,
+        borderRadius: 12,
     },
     forumTitle: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
+        color: '#fff',
+        marginBottom: 8,
+    },
+    categoryTag: {
+        fontSize: 12,
+        color: '#333',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+        alignSelf: 'flex-start',
+        marginTop: 8,
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: '#666',
+        fontSize: 16,
+        fontStyle: 'italic',
+        marginTop: 32,
     },
     modal: {
         justifyContent: 'flex-end',
@@ -79,6 +142,15 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#fff',
+    },
+    headerLeft: {
+        flex: 1,
+    },
+    headerRight: {
+        padding: 8,
+    },
+    scrollView: {
+        flex: 1,
     },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -10,6 +10,8 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Alert,
+    Modal,
+    ScrollView,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { auth, db, storage } from '../../config/firebase';
@@ -18,6 +20,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './SignUpScreen.styles'; // Import styles
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function SignUpScreen({ navigation }) {
     const [step, setStep] = useState(1);
@@ -29,6 +32,34 @@ export default function SignUpScreen({ navigation }) {
     const [profileImage, setProfileImage] = useState(null);
     const [role, setRole] = useState('');
     const [about, setAbout] = useState('');
+    const [birthDate, setBirthDate] = useState(new Date());
+    const [country, setCountry] = useState('');
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isCountryModalVisible, setIsCountryModalVisible] = useState(false);
+    const [countries, setCountries] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch('https://restcountries.com/v3.1/all');
+                const data = await response.json();
+                const sortedCountries = data
+                    .map(country => country.name.common)
+                    .sort();
+                setCountries(sortedCountries);
+            } catch (error) {
+                console.error('Error fetching countries:', error);
+                // Fallback countries if API fails
+                setCountries(['Denmark', 'Norway', 'Sweden', 'Finland', 'Iceland']);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCountries();
+    }, []);
 
     const handleNextStep = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,6 +83,11 @@ export default function SignUpScreen({ navigation }) {
         } else if (step === 2) {
             if (!profileImage || !role) {
                 Alert.alert('Error', 'Please add a profile image and your role.');
+                return;
+            }
+
+            if (!country) {
+                Alert.alert('Error', 'Please enter your country.');
                 return;
             }
 
@@ -110,19 +146,54 @@ export default function SignUpScreen({ navigation }) {
         }
     };
 
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        setBirthDate(date);
+        hideDatePicker();
+    };
+
+    const handleCountrySelect = (selectedCountry) => {
+        setCountry(selectedCountry);
+        setIsCountryModalVisible(false);
+    };
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>                    
+                <View style={styles.container}>
                     {step === 1 && (
                         <>
-                            <Text style={styles.title}>Start your journey here!</Text>
+                            <Image
+                                source={require('../../../assets/logo/main_logo.png')}
+                                style={styles.logo}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.title}>Sign up</Text>
+                            <Text style={styles.subtitle}>Sign up with one of the following</Text>
+                            <View style={styles.socialButtons}>
+                                <TouchableOpacity style={styles.socialButton}>
+                                    <Ionicons name="logo-google" size={24} color="#EA4335" />
+                                    <Text style={styles.socialButtonText}>With Google</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.socialButton}>
+                                    <Ionicons name="logo-apple" size={24} color="#000" />
+                                    <Text style={styles.socialButtonText}>With Apple</Text>
+                                </TouchableOpacity>
+                            </View>
                             <TextInput
                                 style={styles.input}
                                 placeholder="First Name"
+                                placeholderTextColor="#999"
                                 value={firstName}
                                 onChangeText={setFirstName}
                             />
@@ -160,6 +231,15 @@ export default function SignUpScreen({ navigation }) {
                             >
                                 <Text style={styles.buttonText}>Next</Text>
                             </TouchableOpacity>
+                            <Text style={styles.loginText}>
+                                Already have an account?{' '}
+                                <Text
+                                    style={styles.loginLink}
+                                    onPress={() => navigation.navigate('Login')}
+                                >
+                                    Log In
+                                </Text>
+                            </Text>
                         </>
                     )}
                     {step === 2 && (
@@ -194,6 +274,58 @@ export default function SignUpScreen({ navigation }) {
                                 onChangeText={setAbout}
                                 multiline
                             />
+                            <TouchableOpacity
+                                onPress={showDatePicker}
+                                style={styles.input}
+                            >
+                                <Text>{birthDate.toDateString()}</Text>
+                            </TouchableOpacity>
+                            <DateTimePickerModal
+                                isVisible={isDatePickerVisible}
+                                mode="date"
+                                onConfirm={handleConfirm}
+                                onCancel={hideDatePicker}
+                            />
+                            <TouchableOpacity
+                                style={styles.input}
+                                onPress={() => setIsCountryModalVisible(true)}
+                            >
+                                <Text style={country ? styles.inputText : styles.placeholderText}>
+                                    {country || 'Select country'}
+                                </Text>
+                            </TouchableOpacity>
+                            <Modal
+                                visible={isCountryModalVisible}
+                                animationType="slide"
+                                transparent={true}
+                            >
+                                <View style={styles.modalContainer}>
+                                    <View style={styles.modalContent}>
+                                        <Text style={styles.modalTitle}>Select Country</Text>
+                                        <ScrollView>
+                                            {isLoading ? (
+                                                <Text style={styles.loadingText}>Loading countries...</Text>
+                                            ) : (
+                                                countries.map((item) => (
+                                                    <TouchableOpacity
+                                                        key={item}
+                                                        style={styles.countryItem}
+                                                        onPress={() => handleCountrySelect(item)}
+                                                    >
+                                                        <Text style={styles.countryText}>{item}</Text>
+                                                    </TouchableOpacity>
+                                                ))
+                                            )}
+                                        </ScrollView>
+                                        <TouchableOpacity
+                                            style={styles.closeButton}
+                                            onPress={() => setIsCountryModalVisible(false)}
+                                        >
+                                            <Text style={styles.closeButtonText}>Close</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </Modal>
                             <View style={styles.navigationButtons}>
                                 <TouchableOpacity
                                     style={styles.button}

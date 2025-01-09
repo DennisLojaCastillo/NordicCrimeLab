@@ -13,6 +13,7 @@ import {
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import styles from './LoginScreen.styles';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -40,10 +41,22 @@ export default function LoginScreen({ navigation }) {
                         style={styles.logo}
                         resizeMode="contain"
                     />
-                    <Text style={styles.title}>Welcome back!</Text>
+                    <Text style={styles.title}>Welcome to the community</Text>
+                    <Text style={styles.subtitle}>Log in with one of the following</Text>
+                    <View style={styles.socialButtons}>
+                        <TouchableOpacity style={styles.socialButton}>
+                            <Ionicons name="logo-google" size={24} color="#EA4335" />
+                            <Text style={styles.socialButtonText}>With Google</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.socialButton}>
+                            <Ionicons name="logo-apple" size={24} color="#000" />
+                            <Text style={styles.socialButtonText}>With Apple</Text>
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={styles.input}
-                        placeholder="Email Address"
+                        placeholder="Email"
+                        placeholderTextColor="#999"
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -52,6 +65,7 @@ export default function LoginScreen({ navigation }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Password"
+                        placeholderTextColor="#999"
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
@@ -60,15 +74,15 @@ export default function LoginScreen({ navigation }) {
                         <Text style={styles.forgotPassword}>Forgot password?</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                        <Text style={styles.loginButtonText}>Login</Text>
+                        <Text style={styles.loginButtonText}>Log In</Text>
                     </TouchableOpacity>
                     <Text style={styles.signupText}>
-                        New to Nordic Crime Lab?{' '}
+                        First time here?{' '}
                         <Text
                             style={styles.signupLink}
                             onPress={() => navigation.navigate('SignUp')}
                         >
-                            Sign Up
+                            Sign up for free
                         </Text>
                     </Text>
                 </View>

@@ -7,16 +7,14 @@ const Stack = createNativeStackNavigator();
 
 export default function ProfileScreenNavigator() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
                 name="UserProfile"
                 component={ProfileScreen}
-                options={{ headerShown: false }}
             />
             <Stack.Screen
                 name="EditUserProfile"
                 component={EditProfileScreen}
-                options={{ headerShown: false }}
             />            
         </Stack.Navigator>
     );

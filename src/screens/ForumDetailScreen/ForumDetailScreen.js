@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     FlatList,
     ActivityIndicator,
     Alert,
+    SafeAreaView,
 } from 'react-native';
 import { auth, db } from '../../config/firebase';
 import {
@@ -22,9 +23,11 @@ import {
     getDocs,
     writeBatch,
 } from 'firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from './ForumDetailScreen.styles';
+import Modal from 'react-native-modal';
 
 export default function ForumDetailScreen({ route, navigation }) {
     const { forumId } = route.params;
@@ -32,47 +35,75 @@ export default function ForumDetailScreen({ route, navigation }) {
     const [posts, setPosts] = useState([]);
     const [isMember, setIsMember] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isModalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        const fetchForumData = async () => {
-            try {
-                const forumRef = doc(db, 'forums', forumId);
-                const forumSnap = await getDoc(forumRef);
-                if (forumSnap.exists()) {
-                    const data = forumSnap.data();
-                    setForumData(data);
-                    setIsMember(data.members?.includes(auth.currentUser.uid));
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+
+    const handleEdit = () => {
+        toggleModal();
+        navigation.navigate('EditForum', { 
+            forumId: forumId,
+            forum: forumData
+        });
+    };
+
+    const handleDelete = () => {
+        toggleModal();
+        Alert.alert(
+            'Delete Forum',
+            'Are you sure you want to delete this forum? This action cannot be undone.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                    text: 'Delete', 
+                    style: 'destructive',
+                    onPress: deleteForum
                 }
-            } catch (error) {
-                console.error('Error fetching forum data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+            ]
+        );
+    };
 
-        const fetchPosts = () => {
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchForumData = async () => {
+                try {
+                    const forumRef = doc(db, 'forums', forumId);
+                    const forumSnap = await getDoc(forumRef);
+                    if (forumSnap.exists()) {
+                        const data = forumSnap.data();
+                        setForumData(data);
+                        setIsMember(
+                            data.members?.includes(auth.currentUser.uid) || 
+                            data.createdBy === auth.currentUser.uid
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error fetching forum data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
             const postsQuery = query(
                 collection(db, 'posts'),
                 where('forumId', '==', forumId)
             );
-            const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-                const fetchedPosts = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setPosts(fetchedPosts);
+
+            const unsubscribePosts = onSnapshot(postsQuery, (snapshot) => {
+                const postsData = [];
+                snapshot.forEach((doc) => {
+                    postsData.push({ id: doc.id, ...doc.data() });
+                });
+                setPosts(postsData);
             });
 
-            return unsubscribe;
-        };
+            fetchForumData();
 
-        fetchForumData();
-        const unsubscribePosts = fetchPosts();
-
-        return () => {
-            unsubscribePosts();
-        };
-    }, [forumId]);
+            return () => unsubscribePosts();
+        }, [forumId])
+    );
 
     const toggleJoinLeaveForum = async () => {
         if (forumData?.createdBy === auth.currentUser.uid) {
@@ -126,100 +157,122 @@ export default function ForumDetailScreen({ route, navigation }) {
     };
     
 
-    const confirmDelete = () => {
-        Alert.alert(
-            'Delete Forum',
-            'Are you sure you want to delete this forum? This action cannot be undone.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Delete', onPress: deleteForum, style: 'destructive' },
-            ]
-        );
-    };
-
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#007BFF" />
-            </View>
+            <SafeAreaView style={styles.safeArea}>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#007BFF" />
+                </View>
+            </SafeAreaView>
         );
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={styles.backButton}
-                >
-                    <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
-                </TouchableOpacity>
-
-                {forumData?.createdBy === auth.currentUser.uid ? (
-                    <TouchableOpacity
-                        onPress={confirmDelete}
-                        style={styles.deleteButton}
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate('Forums', { 
+                            screen: 'ForumsScreen',
+                            initial: false,
+                            params: {
+                                refresh: true,
+                                timestamp: Date.now()
+                            }
+                        })} 
+                        style={styles.backButton}
                     >
-                        <Ionicons name="trash-outline" size={24} color="#FF3B30" />
+                        <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
                     </TouchableOpacity>
-                ) : (
-                    <View style={styles.joinContainer}>
-                        <TouchableOpacity onPress={toggleJoinLeaveForum}>
-                            <Ionicons
-                                name={
-                                    isMember
-                                        ? 'checkmark-circle-outline'
-                                        : 'add-circle-outline'
-                                }
-                                size={28}
-                                color={isMember ? '#007BFF' : '#888'}
-                            />
-                        </TouchableOpacity>
-                        <Text style={styles.joinText}>
-                            {isMember ? 'Leave Forum' : 'Join Forum'}
-                        </Text>
-                    </View>
-                )}
-            </View>
-            <Text style={styles.title}>{forumData?.title}</Text>
-            <Text style={styles.description}>{forumData?.description}</Text>
-            <Text style={styles.category}>Category: {forumData?.category}</Text>
 
-            <FlatList
-                data={posts}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate('PostDetailScreen', {
+                    {forumData?.createdBy === auth.currentUser.uid ? (
+                        <TouchableOpacity onPress={toggleModal}>
+                            <Ionicons name="ellipsis-vertical" size={24} color="#007BFF" />
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={toggleJoinLeaveForum} style={styles.joinContainer}>
+                            <Ionicons
+                                name={isMember ? "checkmark-circle" : "add-circle"}
+                                size={24}
+                                color={isMember ? "#007BFF" : "#666"}
+                            />
+                            <Text style={styles.joinText}>
+                                {isMember ? 'Joined' : 'Join Forum'}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                <View style={styles.contentContainer}>
+                    <Text style={styles.title}>{forumData?.title}</Text>
+                    <Text style={styles.description}>{forumData?.description}</Text>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.category}>{forumData?.category}</Text>
+                    </View>
+                </View>
+
+                <FlatList
+                    data={posts}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('PostDetailScreen', {
                                 postId: item.id,
                                 postTitle: item.title,
                                 postContent: item.content,
-                            })
-                        }
-                        style={styles.postCard}
-                    >
-                        <Text style={styles.postTitle}>{item.title}</Text>
-                        <Text style={styles.postUser}>By: {item.createdByName}</Text>
-                        <Text style={styles.postComments}>
-                            {item.comments?.length || 0} comments
+                            })}
+                            style={styles.postCard}
+                        >
+                            <Text style={styles.postTitle}>{item.title}</Text>
+                            <Text style={styles.postUser}>By {item.createdByName}</Text>
+                            <View style={styles.postMetaContainer}>
+                                <View style={styles.postStatsContainer}>
+                                    <Ionicons name="chatbubble-outline" size={16} color="#666" />
+                                    <Text style={styles.postStatText}>
+                                        {item.commentCount || 0} comments
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyState}>
+                            No posts yet. Start the conversation by creating the first post!
                         </Text>
+                    }
+                />
+
+                {isMember && (
+                    <TouchableOpacity
+                        style={styles.createPostButton}
+                        onPress={() => navigation.navigate('CreatePostScreen', { forumId })}
+                    >
+                        <Ionicons name="add" size={24} color="#fff" />
                     </TouchableOpacity>
                 )}
-                ListEmptyComponent={
-                    <Text style={styles.emptyState}>No posts yet. Be the first to post!</Text>
-                }
-            />
 
-
-            {isMember && (
-                <TouchableOpacity
-                    style={styles.createPostButton}
-                    onPress={() => navigation.navigate('CreatePostScreen', { forumId })}
+                {/* Options Modal */}
+                <Modal
+                    isVisible={isModalVisible}
+                    onBackdropPress={toggleModal}
+                    style={styles.modal}
                 >
-                    <Text style={styles.createPostButtonText}>Create Post</Text>
-                </TouchableOpacity>
-            )}
-        </View>
+                    <View style={styles.modalContent}>
+                        <TouchableOpacity
+                            style={styles.modalItem}
+                            onPress={handleEdit}
+                        >
+                            <Text style={styles.modalText}>Edit Forum</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.modalItem, styles.deleteItem]}
+                            onPress={handleDelete}
+                        >
+                            <Text style={[styles.modalText, styles.deleteText]}>Delete Forum</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </View>
+        </SafeAreaView>
     );
 }

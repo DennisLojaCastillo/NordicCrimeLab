@@ -6,6 +6,8 @@ import {
     TouchableOpacity,
     Alert,
     ActivityIndicator,
+    SafeAreaView,
+    ScrollView,
 } from 'react-native';
 import { db, auth } from '../../config/firebase';
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -27,13 +29,23 @@ export default function CreatePostScreen({ route, navigation }) {
                 const forumSnap = await getDoc(forumDocRef);
 
                 if (forumSnap.exists()) {
-                    setForumData(forumSnap.data());
+                    const data = forumSnap.data();
+                    setForumData(data);
+                    
+                    // Tjek om brugeren er medlem ELLER er creator
+                    const isCreator = data.createdBy === auth.currentUser.uid;
+                    const isMember = data.members?.includes(auth.currentUser.uid);
+                    
+                    if (!isMember && !isCreator) {
+                        Alert.alert('Error', 'You must be a member of this forum to create posts.');
+                        navigation.goBack();
+                    }
                 } else {
                     Alert.alert('Error', 'Forum not found.');
                     navigation.goBack();
                 }
             } catch (error) {
-                console.error('Error fetching forum data:', error.message);
+                console.error('Error fetching forum data:', error);
                 Alert.alert('Error', 'Could not fetch forum data.');
                 navigation.goBack();
             } finally {
@@ -91,33 +103,49 @@ export default function CreatePostScreen({ route, navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}>
-                <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
-            </TouchableOpacity>
-            {/* Forum Info */}
-            <Text style={styles.forumTitle}>{forumData?.title}</Text>
-            <Text style={styles.forumCategory}>Category: {forumData?.category}</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={styles.backButton}>
+                        <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
+                    </TouchableOpacity>
+                </View>
 
-            {/* Inputs */}
-            <TextInput
-                style={styles.input}
-                placeholder="Post Title"
-                value={title}
-                onChangeText={setTitle}
-            />
-            <TextInput
-                style={[styles.input, styles.contentInput]}
-                placeholder="Post Content"
-                value={content}
-                onChangeText={setContent}
-                multiline
-            />
-            <TouchableOpacity style={styles.createButton} onPress={handleCreatePost}>
-                <Text style={styles.createButtonText}>Create Post</Text>
-            </TouchableOpacity>
-        </View>
+                <ScrollView style={styles.contentContainer}>
+                    {/* Forum Info */}
+                    <Text style={styles.forumTitle}>{forumData?.title}</Text>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.categoryText}>{forumData?.category}</Text>
+                    </View>
+
+                    {/* Inputs */}
+                    <Text style={styles.inputLabel}>Title</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter post title"
+                        value={title}
+                        onChangeText={setTitle}
+                    />
+
+                    <Text style={styles.inputLabel}>Content</Text>
+                    <TextInput
+                        style={[styles.input, styles.contentInput]}
+                        placeholder="Write your post content here..."
+                        value={content}
+                        onChangeText={setContent}
+                        multiline
+                    />
+
+                    <TouchableOpacity 
+                        style={styles.createButton} 
+                        onPress={handleCreatePost}
+                    >
+                        <Text style={styles.createButtonText}>Create Post</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 }

@@ -8,36 +8,29 @@ import {
     TouchableOpacity, 
     ActivityIndicator,
     Modal,
-    Alert
+    Alert,
+    Image
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { db } from '../../config/firebase';
+import { db, auth, storage } from '../../config/firebase';
 import { collection, getDocs, addDoc, query, orderBy } from 'firebase/firestore';
-import { auth } from '../../config/firebase';
-import styles from './CreateForumScreen.styles';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import styles from './CreateResearchScreen.styles';
 
-// Predefinerede farver til kategorier
-const CATEGORY_COLORS = [
-    '#FF6B6B',  // Rød
-    '#4ECDC4',  // Turkis
-    '#45B7D1',  // Blå
-    '#6C5CE7',  // Lilla
-    '#A8E6CF',  // Lysegrøn
-    '#FFB6B9'   // Lyserød
-];
-
-export default function CreateForumScreen({ navigation }) {
+export default function CreateResearchScreen({ navigation }) {
     const [title, setTitle] = useState('');
+    const [abstract, setAbstract] = useState('');
     const [category, setCategory] = useState('');
-    const [description, setDescription] = useState('');
+    const [keywords, setKeywords] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
-    const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
     const [showNewCategoryModal, setShowNewCategoryModal] = useState(false);
+    const [images, setImages] = useState([]);
+    const [uploading, setUploading] = useState(false);
 
-    // Fetch categories from Firebase
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -67,20 +60,14 @@ export default function CreateForumScreen({ navigation }) {
         try {
             setIsLoading(true);
             const categoriesRef = collection(db, 'categories');
-            
-            // Vælg en farve baseret på antal eksisterende kategorier
-            const color = CATEGORY_COLORS[categories.length % CATEGORY_COLORS.length];
-            
             const newCategoryDoc = await addDoc(categoriesRef, {
                 name: newCategory.trim(),
-                color: color,  // Brug predefineret farve i stedet for tilfældig
                 createdAt: new Date().toISOString()
             });
 
             setCategories([...categories, { 
                 id: newCategoryDoc.id, 
-                name: newCategory.trim(),
-                color: color
+                name: newCategory.trim() 
             }]);
             setCategory(newCategory.trim());
             setNewCategory('');
@@ -94,46 +81,98 @@ export default function CreateForumScreen({ navigation }) {
         }
     };
 
+    const pickImage = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsMultipleSelection: true,
+                quality: 0.8,
+            });
+
+            if (!result.canceled) {
+                setUploading(true);
+                const uploadedUrls = await Promise.all(
+                    result.assets.map(async (asset) => {
+                        const response = await fetch(asset.uri);
+                        const blob = await response.blob();
+                        
+                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+                        const storageRef = ref(storage, `research_images/${auth.currentUser.uid}/${fileName}`);
+                        
+                        await uploadBytes(storageRef, blob);
+                        const url = await getDownloadURL(storageRef);
+                        
+                        return {
+                            url,
+                            fileName
+                        };
+                    })
+                );
+
+                setImages([...images, ...uploadedUrls]);
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+            Alert.alert('Error', 'Failed to upload images');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const deleteImage = (index) => {
+        Alert.alert(
+            'Delete Image',
+            'Are you sure you want to remove this image?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                    text: 'Delete', 
+                    style: 'destructive',
+                    onPress: () => {
+                        const newImages = [...images];
+                        newImages.splice(index, 1);
+                        setImages(newImages);
+                    }
+                }
+            ]
+        );
+    };
+
     const handleSubmit = async () => {
-        if (!title.trim()) {
-            Alert.alert('Error', 'Please enter a title');
-            return;
-        }
-        if (!category) {
-            Alert.alert('Error', 'Please select a category');
-            return;
-        }
-        if (!description.trim()) {
-            Alert.alert('Error', 'Please enter a description');
+        if (!title.trim() || !abstract.trim() || !category) {
+            Alert.alert('Error', 'Please fill in all required fields');
             return;
         }
 
         try {
             setIsLoading(true);
-            const forumsRef = collection(db, 'forums');
+            const researchRef = collection(db, 'research');
             
-            const newForum = {
+            // Konverter keywords string til array
+            const keywordsArray = keywords
+                .split(',')
+                .map(keyword => keyword.trim())
+                .filter(keyword => keyword.length > 0);
+
+            const researchData = {
                 title: title.trim(),
+                abstract: abstract.trim(),
                 category,
-                description: description.trim(),
-                createdAt: new Date().toISOString(),
-                userId: auth.currentUser.uid,
+                keywords: keywordsArray,
+                images: images,
                 createdBy: auth.currentUser.uid,
-                lastActivity: new Date().toISOString(),
-                members: [auth.currentUser.uid],
-                postCount: 0
+                createdAt: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                likes: 0
             };
 
-            await addDoc(forumsRef, newForum);
+            await addDoc(researchRef, researchData);
             
-            setTitle('');
-            setCategory('');
-            setDescription('');
+            Alert.alert('Success', 'Research created successfully');
             navigation.goBack();
-            
         } catch (error) {
-            console.error('Error creating forum:', error);
-            Alert.alert('Error', 'Failed to create forum. Please try again.');
+            console.error('Error creating research:', error);
+            Alert.alert('Error', 'Failed to create research');
         } finally {
             setIsLoading(false);
         }
@@ -146,7 +185,7 @@ export default function CreateForumScreen({ navigation }) {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={24} color="#007BFF" />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Create Forum</Text>
+                    <Text style={styles.headerTitle}>Create Research</Text>
                     <View style={{ width: 24 }} />
                 </View>
 
@@ -154,7 +193,7 @@ export default function CreateForumScreen({ navigation }) {
                     <Text style={styles.inputLabel}>Title</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter forum title"
+                        placeholder="Enter research title"
                         value={title}
                         onChangeText={setTitle}
                     />
@@ -173,15 +212,59 @@ export default function CreateForumScreen({ navigation }) {
                         <Ionicons name="chevron-down" size={20} color="#666" />
                     </TouchableOpacity>
 
-                    <Text style={styles.inputLabel}>Description</Text>
+                    <Text style={styles.inputLabel}>Abstract</Text>
                     <TextInput
-                        style={[styles.input, styles.descriptionInput]}
-                        placeholder="Enter forum description"
-                        value={description}
-                        onChangeText={setDescription}
+                        style={[styles.input, styles.abstractInput]}
+                        placeholder="Enter research abstract"
+                        value={abstract}
+                        onChangeText={setAbstract}
                         multiline
                         numberOfLines={4}
                     />
+
+                    <Text style={styles.inputLabel}>Keywords</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter keywords (comma separated)"
+                        value={keywords}
+                        onChangeText={setKeywords}
+                    />
+
+                    <View style={styles.imagesSection}>
+                        <Text style={styles.inputLabel}>Images</Text>
+                        
+                        <View style={styles.imageGrid}>
+                            {images.map((image, index) => (
+                                <View key={index} style={styles.imageContainer}>
+                                    <Image 
+                                        source={{ uri: image.url }} 
+                                        style={styles.imagePreview} 
+                                    />
+                                    <TouchableOpacity 
+                                        style={styles.deleteImageButton}
+                                        onPress={() => deleteImage(index)}
+                                    >
+                                        <Ionicons name="close-circle" size={24} color="#ff4444" />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                            
+                            <TouchableOpacity 
+                                style={styles.addImageButton}
+                                onPress={pickImage}
+                                disabled={uploading}
+                            >
+                                {uploading ? (
+                                    <ActivityIndicator color="#007BFF" />
+                                ) : (
+                                    <>
+                                        <Ionicons name="camera" size={24} color="#007BFF" />
+                                        <Text style={styles.addImageText}>Add Images</Text>
+                                    </>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
                     <TouchableOpacity 
                         style={styles.submitButton}
@@ -191,12 +274,13 @@ export default function CreateForumScreen({ navigation }) {
                         {isLoading ? (
                             <ActivityIndicator color="#fff" />
                         ) : (
-                            <Text style={styles.submitButtonText}>Create Forum</Text>
+                            <Text style={styles.submitButtonText}>Create Research</Text>
                         )}
                     </TouchableOpacity>
                 </View>
             </ScrollView>
 
+            {/* Category Selection Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -233,22 +317,21 @@ export default function CreateForumScreen({ navigation }) {
                             ))}
                         </ScrollView>
 
-                        <SafeAreaView style={styles.modalFooter}>
-                            <TouchableOpacity 
-                                style={styles.addCategoryButton}
-                                onPress={() => {
-                                    setModalVisible(false);
-                                    setShowNewCategoryModal(true);
-                                }}
-                            >
-                                <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
-                                <Text style={styles.addCategoryText}>Create New Category</Text>
-                            </TouchableOpacity>
-                        </SafeAreaView>
+                        <TouchableOpacity 
+                            style={styles.addCategoryButton}
+                            onPress={() => {
+                                setModalVisible(false);
+                                setShowNewCategoryModal(true);
+                            }}
+                        >
+                            <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
+                            <Text style={styles.addCategoryText}>Create New Category</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
 
+            {/* New Category Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -305,4 +388,4 @@ export default function CreateForumScreen({ navigation }) {
             </Modal>
         </SafeAreaView>
     );
-}
+} 

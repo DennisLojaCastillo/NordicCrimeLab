@@ -4,33 +4,43 @@ import ForumsScreen from '../screens/ForumsScreen/ForumsScreen';
 import ForumDetailScreen from '../screens/ForumDetailScreen/ForumDetailScreen';
 import CreatePostScreen from '../screens/CreatePostScreen/CreatePostScreen';
 import PostDetailScreen from '../screens/PostDetailScreen/PostDetailScreen';
+import CreateForumScreen from '../screens/CreateForumScreen/CreateForumScreen';
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import EditForumScreen from '../screens/EditForumScreen/EditForumScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function ForumNavigator() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
                 name="ForumsScreen"
                 component={ForumsScreen}
-                options={{ headerShown: false}} // Aktivér headers
             />
             <Stack.Screen
                 name="ForumDetailScreen"
                 component={ForumDetailScreen}
-                options={{ headerShown: false, title: 'Forum Details' }}
             />
             <Stack.Screen
                 name="CreatePostScreen"
                 component={CreatePostScreen}
-                options={{ headerShown: false, title: 'Create Post' }}
             />
             <Stack.Screen
                 name="PostDetailScreen"
                 component={PostDetailScreen}
-                options={{ headerShown: false, title: 'Post Details' }}
+            />
+            <Stack.Screen
+                name="CreateForumScreen"
+                component={CreateForumScreen}
+            />
+            <Stack.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+            />
+            <Stack.Screen
+                name="EditForum"
+                component={EditForumScreen}
             />
         </Stack.Navigator>
-
     );
 }
