@@ -17,6 +17,7 @@ import { collection, getDocs, addDoc, query, orderBy } from 'firebase/firestore'
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import styles from './CreateResearchScreen.styles';
+import { colors } from './CreateResearchScreen.styles';
 
 export default function CreateResearchScreen({ navigation }) {
     const [title, setTitle] = useState('');
@@ -183,7 +184,7 @@ export default function CreateResearchScreen({ navigation }) {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Create Research</Text>
                     <View style={{ width: 24 }} />
@@ -209,7 +210,7 @@ export default function CreateResearchScreen({ navigation }) {
                         ]}>
                             {category || 'Select a category'}
                         </Text>
-                        <Ionicons name="chevron-down" size={20} color="#666" />
+                        <Ionicons name="chevron-down" size={20} color={colors.textGray} />
                     </TouchableOpacity>
 
                     <Text style={styles.inputLabel}>Abstract</Text>
@@ -244,7 +245,7 @@ export default function CreateResearchScreen({ navigation }) {
                                         style={styles.deleteImageButton}
                                         onPress={() => deleteImage(index)}
                                     >
-                                        <Ionicons name="close-circle" size={24} color="#ff4444" />
+                                        <Ionicons name="close-circle" size={24} color={colors.error} />
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -255,10 +256,10 @@ export default function CreateResearchScreen({ navigation }) {
                                 disabled={uploading}
                             >
                                 {uploading ? (
-                                    <ActivityIndicator color="#007BFF" />
+                                    <ActivityIndicator color={colors.darkGray} />
                                 ) : (
                                     <>
-                                        <Ionicons name="camera" size={24} color="#007BFF" />
+                                        <Ionicons name="camera" size={24} color={colors.darkGray} />
                                         <Text style={styles.addImageText}>Add Images</Text>
                                     </>
                                 )}
@@ -295,7 +296,7 @@ export default function CreateResearchScreen({ navigation }) {
                                 onPress={() => setModalVisible(false)}
                                 style={styles.closeButton}
                             >
-                                <Ionicons name="close" size={24} color="#333" />
+                                <Ionicons name="close" size={24} color={colors.textGray} />
                             </TouchableOpacity>
                         </View>
 
@@ -311,7 +312,7 @@ export default function CreateResearchScreen({ navigation }) {
                                 >
                                     <Text style={styles.categoryItemText}>{item.name}</Text>
                                     {category === item.name && (
-                                        <Ionicons name="checkmark" size={24} color="#007BFF" />
+                                        <Ionicons name="checkmark" size={24} color={colors.darkGray} />
                                     )}
                                 </TouchableOpacity>
                             ))}
@@ -324,7 +325,7 @@ export default function CreateResearchScreen({ navigation }) {
                                 setShowNewCategoryModal(true);
                             }}
                         >
-                            <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
+                            <Ionicons name="add-circle-outline" size={24} color={colors.darkGray} />
                             <Text style={styles.addCategoryText}>Create New Category</Text>
                         </TouchableOpacity>
                     </View>
@@ -346,7 +347,7 @@ export default function CreateResearchScreen({ navigation }) {
                                 onPress={() => setShowNewCategoryModal(false)}
                                 style={styles.closeButton}
                             >
-                                <Ionicons name="close" size={24} color="#333" />
+                                <Ionicons name="close" size={24} color={colors.textGray} />
                             </TouchableOpacity>
                         </View>
 

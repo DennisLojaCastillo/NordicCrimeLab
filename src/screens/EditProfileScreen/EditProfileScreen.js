@@ -17,6 +17,7 @@ import styles from './EditProfileScreen.styles';
 import { deleteUser } from 'firebase/auth';
 import { ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { colors } from './EditProfileScreen.styles';
 
 export default function EditProfileScreen({ navigation }) {
     const [userData, setUserData] = useState(null);
@@ -287,7 +288,7 @@ export default function EditProfileScreen({ navigation }) {
     if (loading) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="large" color="#007BFF" />
+                <ActivityIndicator size="large" color={colors.primary} />
             </View>
         );
     }
@@ -300,7 +301,7 @@ export default function EditProfileScreen({ navigation }) {
                         onPress={() => navigation.goBack()}
                         style={styles.backButton}
                     >
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.primary} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Edit Profile</Text>
                     <View style={{ width: 24 }} />

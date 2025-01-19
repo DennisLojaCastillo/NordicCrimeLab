@@ -1,9 +1,30 @@
 import { StyleSheet } from 'react-native';
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+};
+
+// Kategori farver
+const categoryColors = {
+    'Forensic Science': colors.darkGray,
+    'Digital Forensics': colors.textGray,
+    'Behavioral Analysis': colors.iconGray,
+    'Crime Scene Investigation': colors.darkGray,
+    'Evidence Analysis': colors.textGray,
+    'General': colors.iconGray,
+};
+
+export { colors, categoryColors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
@@ -19,11 +40,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: colors.darkGray,
     },
     searchContainer: {
         padding: 16,
@@ -31,10 +53,11 @@ export default StyleSheet.create({
     searchBar: {
         borderRadius: 10,
         elevation: 0,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: colors.lightGray,
     },
     searchInput: {
         fontSize: 16,
+        color: colors.textGray,
     },
     section: {
         padding: 16,
@@ -45,13 +68,14 @@ export default StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
+        color: colors.darkGray,
     },
     researchCard: {
         marginBottom: 16,
         borderRadius: 12,
         overflow: 'hidden',
         elevation: 3,
-        shadowColor: '#000',
+        shadowColor: colors.darkGray,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -62,12 +86,12 @@ export default StyleSheet.create({
     researchTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#fff',
+        color: colors.white,
         marginBottom: 8,
     },
     abstract: {
         fontSize: 14,
-        color: '#fff',
+        color: colors.white,
         opacity: 0.9,
         marginBottom: 12,
     },
@@ -82,7 +106,7 @@ export default StyleSheet.create({
     },
     categoryTag: {
         fontSize: 12,
-        color: '#fff',
+        color: colors.white,
         backgroundColor: 'rgba(255,255,255,0.2)',
         paddingHorizontal: 8,
         paddingVertical: 4,
@@ -93,7 +117,7 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     statsText: {
-        color: '#fff',
+        color: colors.white,
         marginLeft: 4,
         marginRight: 12,
         fontSize: 14,

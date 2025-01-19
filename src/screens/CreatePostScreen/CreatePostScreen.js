@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { db, auth } from '../../config/firebase';
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import styles from './CreatePostScreen.styles';
+import styles, { colors } from './CreatePostScreen.styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function CreatePostScreen({ route, navigation }) {
@@ -97,7 +97,7 @@ export default function CreatePostScreen({ route, navigation }) {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#007BFF" />
+                <ActivityIndicator size="large" color={colors.darkGray} />
             </View>
         );
     }
@@ -109,7 +109,7 @@ export default function CreatePostScreen({ route, navigation }) {
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
                         style={styles.backButton}>
-                        <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back-outline" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                 </View>
 

@@ -4,18 +4,8 @@ import { Searchbar } from 'react-native-paper';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from './ResearchHubScreen.styles';
+import styles, { colors, categoryColors } from './ResearchHubScreen.styles';
 import { useFocusEffect } from '@react-navigation/native';
-
-// Farver til forskellige kategorier
-const CATEGORY_COLORS = {
-    'Forensic Science': '#FF6B6B',
-    'Digital Forensics': '#4ECDC4',
-    'Behavioral Analysis': '#45B7D1',
-    'Crime Scene Investigation': '#6C5CE7',
-    'Evidence Analysis': '#A8E6CF',
-    'General': '#FFB6B9'
-};
 
 export default function ResearchHubScreen({ navigation }) {
     const [research, setResearch] = useState([]);
@@ -62,7 +52,7 @@ export default function ResearchHubScreen({ navigation }) {
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>Research Hub</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('CreateResearch')}>
-                        <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
+                        <Ionicons name="add-circle-outline" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
 
@@ -90,7 +80,7 @@ export default function ResearchHubScreen({ navigation }) {
                             <View 
                                 style={[
                                     styles.researchContent, 
-                                    { backgroundColor: CATEGORY_COLORS[item.category] || CATEGORY_COLORS.General }
+                                    { backgroundColor: categoryColors[item.category] || categoryColors.General }
                                 ]}
                             >
                                 <Text style={styles.researchTitle}>{item.title}</Text>

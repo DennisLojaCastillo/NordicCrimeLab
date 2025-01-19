@@ -234,7 +234,7 @@ export default function PostDetailScreen({ route, navigation }) {
         return (
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#007BFF" />
+                    <ActivityIndicator size="large" color="#000" />
                 </View>
             </SafeAreaView>
         );
@@ -266,7 +266,7 @@ export default function PostDetailScreen({ route, navigation }) {
                         }} 
                         style={styles.backButton}
                     >
-                        <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back-outline" size={24} color="#000" />
                     </TouchableOpacity>
                     
                     <Text style={styles.headerTitle} numberOfLines={1}>

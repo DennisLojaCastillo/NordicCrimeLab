@@ -30,6 +30,7 @@ import styles from './ForumDetailScreen.styles';
 import Modal from 'react-native-modal';
 import { NOTIFICATION_TYPES } from '../../services/NotificationService';
 import { saveNotification } from '../../services/NotificationService';
+import { colors } from './ForumDetailScreen.styles';
 
 export default function ForumDetailScreen({ route, navigation }) {
     const { forumId } = route.params;
@@ -178,7 +179,7 @@ export default function ForumDetailScreen({ route, navigation }) {
         return (
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#007BFF" />
+                    <ActivityIndicator size="large" color={colors.darkGray} />
                 </View>
             </SafeAreaView>
         );
@@ -189,29 +190,22 @@ export default function ForumDetailScreen({ route, navigation }) {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity 
-                        onPress={() => navigation.navigate('Forums', { 
-                            screen: 'ForumsScreen',
-                            initial: false,
-                            params: {
-                                refresh: true,
-                                timestamp: Date.now()
-                            }
-                        })} 
+                        onPress={() => navigation.goBack()}
                         style={styles.backButton}
                     >
-                        <Ionicons name="arrow-back-outline" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back-outline" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
 
                     {forumData?.createdBy === auth.currentUser.uid ? (
                         <TouchableOpacity onPress={toggleModal}>
-                            <Ionicons name="ellipsis-vertical" size={24} color="#007BFF" />
+                            <Ionicons name="ellipsis-vertical" size={24} color={colors.darkGray} />
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity onPress={toggleJoinLeaveForum} style={styles.joinContainer}>
                             <Ionicons
                                 name={isMember ? "checkmark-circle" : "add-circle"}
                                 size={24}
-                                color={isMember ? "#007BFF" : "#666"}
+                                color={isMember ? colors.darkGray : colors.textGray}
                             />
                             <Text style={styles.joinText}>
                                 {isMember ? 'Joined' : 'Join Forum'}

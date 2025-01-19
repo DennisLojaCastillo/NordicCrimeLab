@@ -4,7 +4,7 @@ import { Searchbar } from 'react-native-paper';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, getDoc, query, orderBy } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from './ForumsScreen.styles';
+import styles, { colors } from './ForumsScreen.styles';
 
 export default function ForumsScreen({ navigation }) {
     const [forums, setForums] = useState([]);
@@ -63,7 +63,7 @@ export default function ForumsScreen({ navigation }) {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#007BFF" />
+                <ActivityIndicator size="large" color={colors.darkGray} />
             </View>
         );
     }
@@ -74,7 +74,7 @@ export default function ForumsScreen({ navigation }) {
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>Forums</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('CreateForumScreen')}>
-                        <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
+                        <Ionicons name="add-circle-outline" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                 </View>
 
@@ -85,7 +85,7 @@ export default function ForumsScreen({ navigation }) {
                         inputStyle={styles.searchInput}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                        icon={() => <Ionicons name="search" size={20} color="#666" />}
+                        icon={() => <Ionicons name="search" size={20} color={colors.textGray} />}
                     />
                 </View>
 

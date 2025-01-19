@@ -116,7 +116,7 @@ export default StyleSheet.create({
     },
     modalText: {
         fontSize: 16,
-        color: '#007BFF',
+        color: '#000',
         textAlign: 'center',
     },
     deleteItem: {

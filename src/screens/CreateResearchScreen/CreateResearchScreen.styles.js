@@ -1,9 +1,21 @@
 import { StyleSheet, Platform } from 'react-native';
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+    error: '#ff4444',       // Rød til sletning/fejl
+};
+
+export { colors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
@@ -15,12 +27,12 @@ export default StyleSheet.create({
         padding: 16,
         paddingTop: Platform.OS === 'android' ? 16 : 8,
         borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        borderBottomColor: colors.lightGray,
     },
     headerTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     formContainer: {
         padding: 16,
@@ -28,16 +40,18 @@ export default StyleSheet.create({
     inputLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: colors.textGray,
         marginBottom: 8,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#e0e0e0',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         padding: 12,
         marginBottom: 16,
         fontSize: 16,
+        backgroundColor: colors.lightGray,
+        color: colors.textGray,
     },
     abstractInput: {
         height: 120,
@@ -48,27 +62,39 @@ export default StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#e0e0e0',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         padding: 12,
         marginBottom: 16,
+        backgroundColor: colors.lightGray,
     },
     categorySelectorText: {
         fontSize: 16,
-        color: '#333',
+        color: colors.textGray,
     },
     categorySelectorPlaceholder: {
-        color: '#999',
+        color: colors.iconGray,
     },
     submitButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.darkGray,
         padding: 16,
-        borderRadius: 8,
+        borderRadius: 12,
         alignItems: 'center',
         marginTop: 16,
+        ...Platform.select({
+            ios: {
+                shadowColor: colors.darkGray,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 3,
+            },
+        }),
     },
     submitButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
         fontWeight: '600',
     },
@@ -78,7 +104,7 @@ export default StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalContent: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         maxHeight: '80%',
@@ -89,12 +115,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        borderBottomColor: colors.lightGray,
     },
     modalTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     closeButton: {
         padding: 4,
@@ -108,11 +134,11 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        borderBottomColor: colors.lightGray,
     },
     categoryItemText: {
         fontSize: 16,
-        color: '#333',
+        color: colors.textGray,
     },
     modalFooter: {
         padding: 16,
@@ -128,7 +154,7 @@ export default StyleSheet.create({
     addCategoryText: {
         marginLeft: 8,
         fontSize: 16,
-        color: '#007BFF',
+        color: colors.darkGray,
         fontWeight: '600',
     },
     newCategoryContainer: {
@@ -214,32 +240,32 @@ export default StyleSheet.create({
     imagePreview: {
         width: '100%',
         aspectRatio: 1,
-        borderRadius: 8,
+        borderRadius: 12,
     },
     deleteImageButton: {
         position: 'absolute',
         top: 0,
         right: 0,
-        backgroundColor: 'white',
+        backgroundColor: colors.white,
         borderRadius: 12,
         margin: 8,
     },
     addImageButton: {
         width: '33.33%',
         padding: 4,
-    },
-    addImageButtonContent: {
         borderWidth: 1,
-        borderColor: '#007BFF',
+        borderColor: colors.darkGray,
         borderStyle: 'dashed',
-        borderRadius: 8,
+        borderRadius: 12,
         aspectRatio: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: colors.lightGray,
     },
     addImageText: {
-        color: '#007BFF',
-        marginTop: 4,
-        fontSize: 12,
+        color: colors.darkGray,
+        marginTop: 8,
+        fontSize: 14,
+        textAlign: 'center',
     },
 }); 

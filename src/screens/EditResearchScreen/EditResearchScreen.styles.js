@@ -1,9 +1,23 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
+// Genbruger farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+    error: '#ff4444',       // Rød til sletning/fejl
+    primary: '#000',     // Primær blå farve til knapper
+};
+
+export { colors };
+
+// Genbruger styles fra CreateResearchScreen med få ændringer
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
@@ -13,12 +27,14 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 16,
+        paddingTop: Platform.OS === 'android' ? 16 : 8,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     headerTitle: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: colors.darkGray,
     },
     formContainer: {
         padding: 16,
@@ -27,15 +43,17 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: 8,
-        color: '#333',
+        color: colors.textGray,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         padding: 12,
         marginBottom: 16,
         fontSize: 16,
+        backgroundColor: colors.lightGray,
+        color: colors.textGray,
     },
     abstractInput: {
         height: 120,
@@ -46,14 +64,15 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         padding: 12,
         marginBottom: 16,
+        backgroundColor: colors.lightGray,
     },
     categorySelectorText: {
         fontSize: 16,
-        color: '#333',
+        color: colors.textGray,
     },
     modalContainer: {
         flex: 1,
@@ -61,7 +80,7 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         marginHorizontal: 20,
         borderRadius: 12,
         maxHeight: '80%',
@@ -72,11 +91,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     modalTitle: {
         fontSize: 18,
         fontWeight: '600',
+        color: colors.darkGray,
     },
     closeButton: {
         padding: 4,
@@ -90,7 +110,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     categoryItemText: {
         fontSize: 16,
@@ -101,23 +121,24 @@ export default StyleSheet.create({
         justifyContent: 'center',
         padding: 16,
         borderTopWidth: 1,
-        borderTopColor: '#eee',
+        borderTopColor: colors.lightGray,
     },
     addCategoryText: {
         marginLeft: 8,
         fontSize: 16,
-        color: '#007BFF',
+        color: colors.primary,
     },
     newCategoryContainer: {
         padding: 16,
     },
     newCategoryInput: {
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         padding: 12,
         marginBottom: 16,
         fontSize: 16,
+        backgroundColor: colors.lightGray,
     },
     newCategoryButtons: {
         flexDirection: 'row',
@@ -131,29 +152,29 @@ export default StyleSheet.create({
     },
     cancelButton: {
         marginRight: 8,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: colors.lightGray,
     },
     createButton: {
         marginLeft: 8,
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.primary,
     },
     cancelButtonText: {
-        color: '#666',
+        color: colors.textGray,
         fontSize: 16,
     },
     createButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
     },
     submitButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.primary,
         padding: 16,
-        borderRadius: 8,
+        borderRadius: 12,
         alignItems: 'center',
         marginTop: 24,
     },
     submitButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
         fontWeight: '600',
     },
@@ -179,24 +200,25 @@ export default StyleSheet.create({
         position: 'absolute',
         top: 4,
         right: 4,
-        backgroundColor: 'white',
+        backgroundColor: colors.white,
         borderRadius: 12,
     },
     addImageButton: {
         width: '33.33%',
-        padding: 8,
-    },
-    addImageContent: {
+        padding: 4,
         borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
+        borderColor: colors.darkGray,
+        borderStyle: 'dashed',
+        borderRadius: 12,
         aspectRatio: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: colors.lightGray,
     },
     addImageText: {
+        color: colors.darkGray,
         marginTop: 8,
-        color: '#007BFF',
+        fontSize: 14,
         textAlign: 'center',
     },
 }); 

@@ -19,7 +19,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Ionicons } from '@expo/vector-icons';
-import styles from './SignUpScreen.styles'; // Import styles
+import styles, { colors } from './SignUpScreen.styles';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function SignUpScreen({ navigation }) {
@@ -182,11 +182,11 @@ export default function SignUpScreen({ navigation }) {
                             <Text style={styles.subtitle}>Sign up with one of the following</Text>
                             <View style={styles.socialButtons}>
                                 <TouchableOpacity style={styles.socialButton}>
-                                    <Ionicons name="logo-google" size={24} color="#EA4335" />
+                                    <Ionicons name="logo-google" size={24} color={colors.primary} />
                                     <Text style={styles.socialButtonText}>With Google</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.socialButton}>
-                                    <Ionicons name="logo-apple" size={24} color="#000" />
+                                    <Ionicons name="logo-apple" size={24} color={colors.primary} />
                                     <Text style={styles.socialButtonText}>With Apple</Text>
                                 </TouchableOpacity>
                             </View>

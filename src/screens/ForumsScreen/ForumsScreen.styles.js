@@ -1,13 +1,24 @@
 import { StyleSheet, Platform } from 'react-native';
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+};
+
+export { colors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     header: {
         flexDirection: 'row',
@@ -20,18 +31,19 @@ export default StyleSheet.create({
     headerTitle: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     searchContainer: {
         padding: 16,
     },
     searchBar: {
         borderRadius: 12,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.lightGray,
         elevation: 0,
     },
     searchInput: {
         fontSize: 14,
+        color: colors.textGray,
     },
     section: {
         padding: 16,
@@ -46,17 +58,21 @@ export default StyleSheet.create({
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     forumCard: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         borderRadius: 12,
         marginBottom: 16,
         elevation: 2,
         overflow: 'hidden',
+        shadowColor: colors.darkGray,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
     forumContent: {
-        backgroundColor: '#6C5CE7',
+        backgroundColor: colors.darkGray,
         padding: 15,
         borderRadius: 10,
         minHeight: 100,
@@ -65,7 +81,7 @@ export default StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 8,
-        color: '#fff',
+        color: colors.white,
     },
     forumMeta: {
         marginBottom: 8,
@@ -76,7 +92,7 @@ export default StyleSheet.create({
     },
     categoryTag: {
         fontSize: 12,
-        color: '#333',
+        color: colors.darkGray,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         paddingHorizontal: 8,
         paddingVertical: 4,

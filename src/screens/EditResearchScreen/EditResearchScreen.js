@@ -17,6 +17,7 @@ import { collection, getDocs, doc, updateDoc, query, orderBy } from 'firebase/fi
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import styles from './EditResearchScreen.styles'; // Vi vil genbruge styles fra CreateResearchScreen
+import { colors } from './EditResearchScreen.styles'; // Vi vil genbruge colors fra EditResearchScreen.styles
 
 export default function EditResearchScreen({ route, navigation }) {
     const { researchId, research } = route.params;
@@ -182,7 +183,7 @@ export default function EditResearchScreen({ route, navigation }) {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Edit Research</Text>
                     <View style={{ width: 24 }} />
@@ -205,7 +206,7 @@ export default function EditResearchScreen({ route, navigation }) {
                         <Text style={styles.categorySelectorText}>
                             {category}
                         </Text>
-                        <Ionicons name="chevron-down" size={20} color="#666" />
+                        <Ionicons name="chevron-down" size={20} color={colors.textGray} />
                     </TouchableOpacity>
 
                     <Text style={styles.inputLabel}>Abstract</Text>
@@ -240,7 +241,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                         style={styles.deleteImageButton}
                                         onPress={() => deleteImage(index)}
                                     >
-                                        <Ionicons name="close-circle" size={24} color="#ff4444" />
+                                        <Ionicons name="close-circle" size={24} color={colors.error} />
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -251,10 +252,10 @@ export default function EditResearchScreen({ route, navigation }) {
                                 disabled={uploading}
                             >
                                 {uploading ? (
-                                    <ActivityIndicator color="#007BFF" />
+                                    <ActivityIndicator color={colors.darkGray} />
                                 ) : (
                                     <>
-                                        <Ionicons name="camera" size={24} color="#007BFF" />
+                                        <Ionicons name="camera" size={24} color={colors.darkGray} />
                                         <Text style={styles.addImageText}>Add Images</Text>
                                     </>
                                 )}
@@ -268,7 +269,7 @@ export default function EditResearchScreen({ route, navigation }) {
                         disabled={isLoading}
                     >
                         {isLoading ? (
-                            <ActivityIndicator color="#fff" />
+                            <ActivityIndicator color={colors.white} />
                         ) : (
                             <Text style={styles.submitButtonText}>Update Research</Text>
                         )}
@@ -291,7 +292,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                 onPress={() => setModalVisible(false)}
                                 style={styles.closeButton}
                             >
-                                <Ionicons name="close" size={24} color="#333" />
+                                <Ionicons name="close" size={24} color={colors.textGray} />
                             </TouchableOpacity>
                         </View>
 
@@ -307,7 +308,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                 >
                                     <Text style={styles.categoryItemText}>{item.name}</Text>
                                     {category === item.name && (
-                                        <Ionicons name="checkmark" size={24} color="#007BFF" />
+                                        <Ionicons name="checkmark" size={24} color={colors.darkGray} />
                                     )}
                                 </TouchableOpacity>
                             ))}
@@ -320,7 +321,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                 setShowNewCategoryModal(true);
                             }}
                         >
-                            <Ionicons name="add-circle-outline" size={24} color="#007BFF" />
+                            <Ionicons name="add-circle-outline" size={24} color={colors.darkGray} />
                             <Text style={styles.addCategoryText}>Create New Category</Text>
                         </TouchableOpacity>
                     </View>
@@ -342,7 +343,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                 onPress={() => setShowNewCategoryModal(false)}
                                 style={styles.closeButton}
                             >
-                                <Ionicons name="close" size={24} color="#333" />
+                                <Ionicons name="close" size={24} color={colors.textGray} />
                             </TouchableOpacity>
                         </View>
 
@@ -372,7 +373,7 @@ export default function EditResearchScreen({ route, navigation }) {
                                     disabled={isLoading}
                                 >
                                     {isLoading ? (
-                                        <ActivityIndicator color="#fff" />
+                                        <ActivityIndicator color={colors.white} />
                                     ) : (
                                         <Text style={styles.createButtonText}>Create</Text>
                                     )}

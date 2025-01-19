@@ -8,6 +8,7 @@ import {
     ActivityIndicator,
     SafeAreaView,
     ScrollView,
+    Alert,
 } from 'react-native';
 import { auth, db } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
@@ -16,14 +17,15 @@ import Modal from 'react-native-modal';
 import styles from './ProfileScreen.styles';
 import { doc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import placeholderImage from '../../../assets/placeholder/placeholder.png';
+import { colors } from './ProfileScreen.styles';
 
 const CATEGORY_COLORS = {
-    'DNA Analysis': '#FF6B6B',
-    'Digital Forensics': '#4ECDC4',
-    'Crime Scene': '#45B7D1',
-    'General': '#6C5CE7',
-    'Evidence': '#A8E6CF',
-    'Research': '#FFB6B9'
+    'DNA Analysis': colors.primary,
+    'Digital Forensics': colors.darkGray,
+    'Crime Scene': colors.textGray,
+    'General': colors.iconGray,
+    'Evidence': colors.lightGray,
+    'Research': colors.error
 };
 
 export default function ProfileScreen({ navigation }) {
@@ -40,9 +42,14 @@ export default function ProfileScreen({ navigation }) {
         let unsubscribeMemberForums;
 
         const fetchData = async () => {
-            if (!auth.currentUser) return;
+            // Tjek om bruger er logget ind
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                setLoading(false);
+                return;
+            }
             
-            const userId = auth.currentUser.uid;
+            const userId = currentUser.uid;
             setLoading(true);
 
             try {
@@ -88,14 +95,18 @@ export default function ProfileScreen({ navigation }) {
             }
         };
 
-        fetchData();
+        // Start lytning kun hvis bruger er logget ind
+        if (auth.currentUser) {
+            fetchData();
+        }
 
+        // Cleanup funktion
         return () => {
             if (unsubscribeUser) unsubscribeUser();
             if (unsubscribeCreatedForums) unsubscribeCreatedForums();
             if (unsubscribeMemberForums) unsubscribeMemberForums();
         };
-    }, []);
+    }, [auth.currentUser]); // Tilføj auth.currentUser som dependency
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -106,12 +117,22 @@ export default function ProfileScreen({ navigation }) {
             // Først lukker vi modalen
             setModalVisible(false);
             
+            // Stop alle listeners før logout
+            setUserData(null);
+            setUserForums([]);
+            setMemberForums([]);
+            
             // Derefter logger vi ud
             await signOut(auth);
             
-            // Navigation til login screen håndteres automatisk af AuthStack
+            // Naviger til root navigator og reset til Login
+            navigation.getParent()?.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
         } catch (error) {
             console.error('Error logging out:', error.message);
+            Alert.alert('Error', 'Could not log out. Please try again.');
         }
     };
     
@@ -120,7 +141,7 @@ export default function ProfileScreen({ navigation }) {
         return (
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#007BFF" />
+                    <ActivityIndicator size="large" color={colors.primary} />
                 </View>
             </SafeAreaView>
         );
@@ -135,7 +156,7 @@ export default function ProfileScreen({ navigation }) {
                         <Text style={styles.headerTitle}>Profile</Text>
                     </View>
                     <TouchableOpacity onPress={toggleModal} style={styles.headerRight}>
-                        <Ionicons name="settings-outline" size={24} color="#007BFF" />
+                        <Ionicons name="settings-outline" size={24} color={colors.primary} />
                     </TouchableOpacity>
                 </View>
 

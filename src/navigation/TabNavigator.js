@@ -8,6 +8,17 @@ import NotificationsScreen from '../screens/NotificationsScreen/NotificationsScr
 import ProfileScreenNavigator from './ProfileScreenNavigator';
 import { useNotifications } from '../context/NotificationContext';
 
+// Genbruger farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+    error: '#ff4444',       // Rød til notifikationer
+    primary: '#000',        // Sort som primær farve
+};
+
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
@@ -33,32 +44,54 @@ export default function TabNavigator() {
 
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: '#007BFF',
-                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: colors.primary,
+                tabBarInactiveTintColor: colors.iconGray,
+                tabBarStyle: {
+                    backgroundColor: colors.white,
+                    borderTopColor: colors.lightGray,
+                    borderTopWidth: 1,
+                },
+                tabBarLabelStyle: {
+                    fontSize: 10,
+                    fontWeight: '500',
+                },
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Tab.Screen 
+                name="Home" 
+                component={HomeScreen} 
+                options={{ headerShown: false }} 
+            />
             <Tab.Screen 
                 name="Forums" 
                 component={ForumNavigator} 
                 options={{ headerShown: false }} 
             />
-            <Tab.Screen name="Research" component={ResearchNavigator} options={{ headerShown: false }} />
+            <Tab.Screen 
+                name="Research" 
+                component={ResearchNavigator} 
+                options={{ headerShown: false }} 
+            />
             <Tab.Screen 
                 name="Notifications" 
                 component={NotificationsScreen} 
                 options={{ 
                     headerShown: false,
-                    tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
-                    tabBarBadgeStyle: { 
-                        backgroundColor: '#FF3B30',
+                    tabBarBadge: unreadCount > 0 ? unreadCount : null,
+                    tabBarBadgeStyle: {
+                        backgroundColor: colors.error,
                         minWidth: 16,
                         minHeight: 16,
                         borderRadius: 8,
+                        fontSize: 10,
                     }
                 }} 
             />
-            <Tab.Screen name="Profile" component={ProfileScreenNavigator} options={{ headerShown: false }} />
+            <Tab.Screen 
+                name="Profile" 
+                component={ProfileScreenNavigator} 
+                options={{ headerShown: false }} 
+            />
         </Tab.Navigator>
     );
 }

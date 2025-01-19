@@ -1,14 +1,25 @@
 import { StyleSheet, Platform, Dimensions } from 'react-native';
 const { height } = Dimensions.get('window');
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+};
+
+export { colors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     header: {
         flexDirection: 'row',
@@ -21,17 +32,18 @@ export default StyleSheet.create({
     headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     formContainer: {
         padding: 16,
     },
     input: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.lightGray,
         borderRadius: 12,
         padding: 16,
         marginBottom: 16,
         fontSize: 16,
+        color: colors.textGray,
     },
     descriptionInput: {
         height: 120,
@@ -41,99 +53,30 @@ export default StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.lightGray,
         borderRadius: 12,
         padding: 16,
         marginBottom: 16,
     },
     categorySelectorText: {
         fontSize: 16,
-        color: '#333',
+        color: colors.textGray,
     },
     categorySelectorPlaceholder: {
-        color: '#666',
-    },
-    labelText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 8,
-    },
-    picker: {
-        backgroundColor: '#f0f0f0',
-        borderRadius: 12,
-        ...Platform.select({
-            ios: {
-                height: 150,
-            },
-            android: {
-                height: 50,
-            },
-        }),
+        color: colors.textGray,
+        opacity: 0.6,
     },
     submitButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.darkGray,
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',
         marginTop: 16,
     },
     submitButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
         fontWeight: 'bold',
-    },
-    newCategoryContainer: {
-        padding: 16,
-        paddingBottom: Platform.OS === 'ios' ? 24 : 16,
-    },
-    newCategoryInput: {
-        backgroundColor: '#f0f0f0',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-        fontSize: 16,
-    },
-    newCategoryButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: 12,
-        marginBottom: Platform.OS === 'ios' ? 20 : 0,
-    },
-    newCategoryButton: {
-        flex: 1,
-        padding: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-        marginBottom: Platform.OS === 'ios' ? 10 : 0,
-    },
-    cancelButton: {
-        backgroundColor: '#f0f0f0',
-    },
-    createButton: {
-        backgroundColor: '#007BFF',
-    },
-    cancelButtonText: {
-        color: '#666',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    createButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    addCategoryButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-    },
-    addCategoryText: {
-        color: '#007BFF',
-        fontSize: 16,
-        marginLeft: 8,
-        fontWeight: '600',
     },
     modalContainer: {
         flex: 1,
@@ -141,7 +84,7 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalContent: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         paddingBottom: Platform.OS === 'ios' ? 34 : 0,
@@ -152,15 +95,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
-    },
-    closeButton: {
-        padding: 8,
+        color: colors.darkGray,
     },
     categoryList: {
         maxHeight: height * 0.5,
@@ -171,22 +111,70 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: colors.lightGray,
     },
     categoryItemText: {
         fontSize: 16,
-        color: '#333',
-    },
-    modalFooter: {
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
-        paddingBottom: Platform.OS === 'ios' ? 20 : 0, // Extra padding for home indicator
+        color: colors.textGray,
     },
     inputLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: colors.textGray,
         marginBottom: 8,
         marginTop: 16,
+    },
+    // Nye kategori styles
+    newCategoryContainer: {
+        padding: 16,
+    },
+    newCategoryInput: {
+        backgroundColor: colors.lightGray,
+        borderRadius: 12,
+        padding: 16,
+        fontSize: 16,
+        color: colors.textGray,
+    },
+    newCategoryButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 12,
+        marginTop: 16,
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: colors.lightGray,
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+    },
+    createButton: {
+        flex: 1,
+        backgroundColor: colors.darkGray,
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+    },
+    cancelButtonText: {
+        color: colors.textGray,
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    createButtonText: {
+        color: colors.white,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    addCategoryButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
+    },
+    addCategoryText: {
+        color: colors.darkGray,
+        fontSize: 16,
+        marginLeft: 8,
+        fontWeight: '600',
     },
 });

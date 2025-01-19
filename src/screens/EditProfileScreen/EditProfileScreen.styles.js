@@ -1,13 +1,26 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+// Genbruger farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+    error: '#ff4444',       // Rød til sletning/fejl
+    primary: '#000',     // Primær blå farve
+};
+
+export { colors };
+
+export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     header: {
         flexDirection: 'row',
@@ -16,12 +29,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         height: 56,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: colors.lightGray,
     },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.textGray,
         flex: 1,
         textAlign: 'center',
     },
@@ -39,25 +52,25 @@ const styles = StyleSheet.create({
     changePhotoText: {
         textAlign: 'center',
         fontSize: 16,
-        color: '#007BFF',
+        color: colors.primary,
         marginBottom: 20,
     },
     input: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         borderRadius: 10,
         padding: 15,
         marginHorizontal: 16,
         marginBottom: 15,
         fontSize: 16,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: colors.lightGray,
     },
     textArea: {
         height: 100,
         textAlignVertical: 'top',
     },
     saveButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.primary,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -65,12 +78,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     saveButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
         fontWeight: 'bold',
     },
     deleteButton: {
-        backgroundColor: 'red',
+        backgroundColor: colors.error,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -78,7 +91,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     deleteButtonText: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
         fontSize: 16,
     },
@@ -86,15 +99,13 @@ const styles = StyleSheet.create({
         opacity: 0.7,
     },
     inputError: {
-        borderColor: 'red',
+        borderColor: colors.error,
     },
     errorText: {
-        color: 'red',
+        color: colors.error,
         fontSize: 12,
         marginTop: -10,
         marginBottom: 10,
         marginLeft: 5,
     }
 });
-
-export default styles;

@@ -165,7 +165,7 @@ export default StyleSheet.create({
         marginBottom: 15,
     },
     modalButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#000',
         padding: 15,
         borderRadius: 12,
         alignItems: 'center',
@@ -181,7 +181,7 @@ export default StyleSheet.create({
     },
     // Comment input container
     addCommentButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#000',
         width: 40,
         height: 40,
         borderRadius: 20,

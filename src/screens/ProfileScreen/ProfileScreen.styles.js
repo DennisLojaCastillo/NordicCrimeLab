@@ -1,13 +1,26 @@
 import { StyleSheet, Platform } from 'react-native';
 
+// Genbruger farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+    error: '#ff4444',       // Rød til sletning/fejl
+    primary: '#000',     // Primær blå farve
+};
+
+export { colors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     header: {
         flexDirection: 'row',
@@ -20,7 +33,7 @@ export default StyleSheet.create({
     headerTitle: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.textGray,
     },
     profileInfo: {
         alignItems: 'center',
@@ -66,14 +79,14 @@ export default StyleSheet.create({
     },
     activeTab: {
         borderBottomWidth: 2,
-        borderBottomColor: '#007BFF',
+        borderBottomColor: '#000',
     },
     tabText: {
         fontSize: 16,
         color: '#666',
     },
     activeTabText: {
-        color: '#007BFF',
+        color: '#000',
         fontWeight: 'bold',
     },
     forumList: {
@@ -136,7 +149,7 @@ export default StyleSheet.create({
     },
     modalText: {
         fontSize: 18,
-        color: '#007BFF',
+        color: '#000',
     },
     loadingContainer: {
         flex: 1,

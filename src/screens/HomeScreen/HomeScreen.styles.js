@@ -2,6 +2,13 @@ import { StyleSheet, Dimensions, Platform } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+};
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
@@ -22,18 +29,7 @@ export default StyleSheet.create({
     welcomeText: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#333',
-    },
-    searchContainer: {
-        padding: 16,
-    },
-    searchBar: {
-        borderRadius: 12,
-        backgroundColor: '#f0f0f0',
-        elevation: 0,
-    },
-    searchInput: {
-        fontSize: 14,
+        color: colors.darkGray,
     },
     section: {
         padding: 16,
@@ -48,54 +44,80 @@ export default StyleSheet.create({
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: colors.darkGray,
     },
     seeMore: {
-        color: '#007BFF',
+        color: colors.darkGray,
         fontSize: 14,
     },
-    featuredCard: {
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    researchCard: {
         width: width * 0.7,
         marginRight: 16,
         borderRadius: 12,
         backgroundColor: '#fff',
         elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
         overflow: 'hidden',
     },
-    featuredImage: {
+    researchImage: {
         width: '100%',
-        height: 160,
+        height: 140,
         backgroundColor: '#f0f0f0',
+        borderRadius: 12,
     },
-    featuredTitle: {
+    researchContent: {
+        padding: 12,
+    },
+    researchTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        padding: 12,
-        paddingBottom: 4,
+        marginBottom: 4,
     },
-    featuredSubtitle: {
+    researchMeta: {
         fontSize: 14,
         color: '#666',
-        padding: 12,
-        paddingTop: 0,
     },
-    categoriesGrid: {
+    forumCard: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        marginTop: 8,
-    },
-    categoryCard: {
-        width: (width - 48) / 2,
-        height: 120,
+        alignItems: 'center',
+        padding: 12,
+        backgroundColor: '#fff',
         borderRadius: 12,
-        padding: 16,
-        marginBottom: 24,
-        justifyContent: 'space-between',
+        marginBottom: 12,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
-    categoryTitle: {
-        color: '#fff',
+    forumIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: colors.darkGray,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+    },
+    forumContent: {
+        flex: 1,
+    },
+    forumTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+    forumMeta: {
+        fontSize: 14,
+        color: '#666',
     },
 });

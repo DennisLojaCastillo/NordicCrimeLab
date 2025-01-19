@@ -121,7 +121,7 @@ export default function ResearchDetailScreen({ route, navigation }) {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#007BFF" />
+                <ActivityIndicator size="large" color="#000" />
             </View>
         );
     }
@@ -131,12 +131,12 @@ export default function ResearchDetailScreen({ route, navigation }) {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color="#000" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Research Details</Text>
                     {research?.createdBy === currentUser.uid ? (
                         <TouchableOpacity onPress={toggleModal}>
-                            <Ionicons name="ellipsis-vertical" size={24} color="#007BFF" />
+                            <Ionicons name="ellipsis-vertical" size={24} color="#000" />
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity onPress={handleLike}>

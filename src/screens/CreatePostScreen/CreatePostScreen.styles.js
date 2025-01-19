@@ -1,14 +1,25 @@
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 
+// Definerer farvepaletten
+const colors = {
+    darkGray: '#1A1A1A',    // Næsten sort
+    textGray: '#333333',    // Mørkegrå til tekst
+    iconGray: '#2A2A2A',    // Mørkegrå til ikoner
+    lightGray: '#f5f5f5',   // Lysegrå til baggrunde
+    white: '#fff',
+};
+
+export { colors };
+
 export default StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     loadingContainer: {
         flex: 1,
@@ -22,7 +33,7 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: colors.lightGray,
     },
     backButton: {
         padding: 8,
@@ -34,7 +45,7 @@ export default StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 5,
-        color: '#333',
+        color: colors.darkGray,
     },
     forumCategory: {
         fontSize: 16,
@@ -44,19 +55,19 @@ export default StyleSheet.create({
     inputLabel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: colors.textGray,
         marginBottom: 8,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#e0e0e0',
-        borderRadius: 8,
+        borderColor: colors.lightGray,
+        borderRadius: 12,
         paddingHorizontal: 15,
         paddingVertical: 12,
         fontSize: 16,
         marginBottom: 20,
-        backgroundColor: '#f9f9f9',
-        color: '#333',
+        backgroundColor: colors.lightGray,
+        color: colors.textGray,
     },
     contentInput: {
         height: 150,
@@ -64,14 +75,14 @@ export default StyleSheet.create({
         paddingTop: 12,
     },
     createButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.darkGray,
         padding: 15,
-        borderRadius: 8,
+        borderRadius: 12,
         alignItems: 'center',
         marginTop: 20,
         ...Platform.select({
             ios: {
-                shadowColor: '#000',
+                shadowColor: colors.darkGray,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.2,
                 shadowRadius: 4,
@@ -82,12 +93,12 @@ export default StyleSheet.create({
         }),
     },
     createButtonText: {
-        color: '#fff',
+        color: colors.white,
         fontSize: 16,
         fontWeight: 'bold',
     },
     categoryContainer: {
-        backgroundColor: '#e3f2fd',
+        backgroundColor: colors.darkGray,
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 15,
@@ -96,7 +107,7 @@ export default StyleSheet.create({
     },
     categoryText: {
         fontSize: 14,
-        color: '#1976d2',
+        color: colors.white,
         fontWeight: '600',
     },
 });

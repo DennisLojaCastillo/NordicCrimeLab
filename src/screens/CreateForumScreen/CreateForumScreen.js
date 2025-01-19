@@ -15,15 +15,16 @@ import { db } from '../../config/firebase';
 import { collection, getDocs, addDoc, query, orderBy } from 'firebase/firestore';
 import { auth } from '../../config/firebase';
 import styles from './CreateForumScreen.styles';
+import { colors } from './CreateForumScreen.styles';
 
 // Predefinerede farver til kategorier
 const CATEGORY_COLORS = [
-    '#FF6B6B',  // Rød
-    '#4ECDC4',  // Turkis
-    '#45B7D1',  // Blå
-    '#6C5CE7',  // Lilla
-    '#A8E6CF',  // Lysegrøn
-    '#FFB6B9'   // Lyserød
+    '#1A1A1A',  // darkGray
+    '#333333',  // textGray
+    '#2A2A2A',  // iconGray
+    '#1F1F1F',  // Variation af darkGray
+    '#262626',  // Variation af darkGray
+    '#2D2D2D'   // Variation af darkGray
 ];
 
 export default function CreateForumScreen({ navigation }) {
@@ -144,7 +145,7 @@ export default function CreateForumScreen({ navigation }) {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Create Forum</Text>
                     <View style={{ width: 24 }} />

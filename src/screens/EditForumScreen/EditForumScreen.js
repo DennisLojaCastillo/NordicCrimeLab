@@ -13,7 +13,7 @@ import { db } from '../../config/firebase';
 import { doc, updateDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
-import styles from './EditForumScreen.styles';
+import styles, { colors } from './EditForumScreen.styles';
 
 export default function EditForumScreen({ route, navigation }) {
     const { forumId, forum } = route.params;
@@ -77,12 +77,12 @@ export default function EditForumScreen({ route, navigation }) {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#007BFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.darkGray} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Edit Forum</Text>
                     <TouchableOpacity onPress={handleUpdate} disabled={loading}>
                         {loading ? (
-                            <ActivityIndicator size="small" color="#007BFF" />
+                            <ActivityIndicator size="small" color={colors.darkGray} />
                         ) : (
                             <Text style={styles.saveButton}>Save</Text>
                         )}
@@ -115,7 +115,7 @@ export default function EditForumScreen({ route, navigation }) {
                         <Text style={styles.categorySelectorText}>
                             {category || 'Select a category'}
                         </Text>
-                        <Ionicons name="chevron-down" size={24} color="#666" />
+                        <Ionicons name="chevron-down" size={24} color={colors.textGray} />
                     </TouchableOpacity>
                 </View>
 
@@ -132,7 +132,7 @@ export default function EditForumScreen({ route, navigation }) {
                                 onPress={() => setModalVisible(false)}
                                 style={styles.closeButton}
                             >
-                                <Ionicons name="close" size={24} color="#333" />
+                                <Ionicons name="close" size={24} color={colors.textGray} />
                             </TouchableOpacity>
                         </View>
                         <ScrollView>
@@ -147,7 +147,7 @@ export default function EditForumScreen({ route, navigation }) {
                                 >
                                     <Text style={styles.categoryItemText}>{item.name}</Text>
                                     {category === item.name && (
-                                        <Ionicons name="checkmark" size={24} color="#007BFF" />
+                                        <Ionicons name="checkmark" size={24} color={colors.darkGray} />
                                     )}
                                 </TouchableOpacity>
                             ))}
